@@ -2,6 +2,7 @@ import React from 'react';
 import './Palette.css';
 import type { Accidental, Duration, NoteName } from '#shared/types';
 import { DURATIONS, NOTE_NAMES } from '#shared/constants';
+import { Button } from '@radix-ui/themes';
 
 interface PaletteProps {
   selectedNote: NoteName | null;
@@ -40,8 +41,8 @@ export const Palette: React.FC<PaletteProps> = ({
         <div className="flex">
           <h3>Note</h3>
           <div className="flex">
-            Octave: {selectedNoteOctave}
-            <button
+            <h3>Octave: {selectedNoteOctave}</h3>
+            <Button
               className="less-y-padding"
               onClick={() =>
                 setSelectedNoteOctave((prev) => {
@@ -53,12 +54,11 @@ export const Palette: React.FC<PaletteProps> = ({
               }
             >
               -
-            </button>
-            <button
+            </Button>
+            <Button
               className="less-y-padding"
               onClick={() =>
                 setSelectedNoteOctave((prev) => {
-                  // if (prev <= 2) return prev;
                   if (prev >= 5) return prev;
                   else {
                     return prev + 1;
@@ -67,18 +67,18 @@ export const Palette: React.FC<PaletteProps> = ({
               }
             >
               +
-            </button>
+            </Button>
           </div>
         </div>
         <div className="palette-buttons">
           {NOTE_NAMES.map((note) => (
-            <button
+            <Button
               key={note}
               className={`palette-btn ${selectedNote === note && !isRest ? 'active' : ''}`}
               onClick={() => onNoteSelect(note)}
             >
               {note}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -86,13 +86,13 @@ export const Palette: React.FC<PaletteProps> = ({
         <h3>Chord</h3>
         <div className="palette-buttons">
           {NOTE_NAMES.map((note) => (
-            <button
+            <Button
               key={note}
               className={`palette-btn ${selectedChord === note && !isRest ? 'active' : ''}`}
               onClick={() => onChordSelect(note)}
             >
               {note}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -101,7 +101,7 @@ export const Palette: React.FC<PaletteProps> = ({
         <h3>Duration</h3>
         <div className="palette-buttons">
           {DURATIONS.map((duration) => (
-            <button
+            <Button
               key={duration}
               className={`palette-btn ${selectedDuration === duration ? 'active' : ''}`}
               onClick={() => onDurationSelect(duration)}
@@ -110,7 +110,7 @@ export const Palette: React.FC<PaletteProps> = ({
               {duration === 'half' && '1/2'}
               {duration === 'quarter' && '1/4'}
               {duration === 'eighth' && '1/8'}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -118,44 +118,44 @@ export const Palette: React.FC<PaletteProps> = ({
       <div className="palette-section">
         <h3>Accidental</h3>
         <div className="palette-buttons">
-          <button
+          <Button
             className={`palette-btn ${selectedAccidental === '' ? 'active' : ''}`}
             onClick={() => onAccidentalToggle('')}
           >
             Natural (♮)
-          </button>
-          <button
+          </Button>
+          <Button
             className={`palette-btn ${selectedAccidental === '#' ? 'active' : ''}`}
             onClick={() => onAccidentalToggle('#')}
           >
             ♯
-          </button>
-          <button
+          </Button>
+          <Button
             className={`palette-btn ${selectedAccidental === 'b' ? 'active' : ''}`}
             onClick={() => onAccidentalToggle('b')}
           >
             ♭
-          </button>
+          </Button>
         </div>
       </div>
 
       <div className="palette-section">
         <h3>Rest</h3>
         <div className="palette-buttons">
-          <button
+          <Button
             className={`palette-btn ${isRest ? 'active' : ''}`}
             onClick={onRestToggle}
           >
             Rest
-          </button>
+          </Button>
         </div>
       </div>
 
       <div className="palette-section">
         <h3>Controls</h3>
-        <button className="palette-btn clear-btn" onClick={onClear}>
+        <Button className="palette-btn clear-btn" onClick={onClear}>
           Clear
-        </button>
+        </Button>
       </div>
     </div>
   );

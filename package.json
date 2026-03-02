@@ -13,6 +13,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@radix-ui/themes": "^3.3.0",
     "@tanstack/react-router": "^1.163.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
