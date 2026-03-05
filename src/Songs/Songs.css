@@ -1,0 +1,147 @@
+.songs-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.songs-page-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.songs-page-header h2 {
+  margin: 0;
+}
+
+.back-btn {
+  padding: 8px 16px;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.back-btn:hover {
+  background: #555;
+}
+
+.songs-page-content {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+}
+
+.songs-list-section {
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 16px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.songs-list-section .song-item {
+  background: white;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.songs-list-section .song-item.selected {
+  border: 2px solid #4a90d9;
+}
+
+.songs-list-section .song-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.songs-list-section .song-name {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.songs-list-section .song-details {
+  font-size: 12px;
+  color: #666;
+}
+
+.songs-list-section .song-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.songs-list-section .load-btn {
+  flex: 1;
+  padding: 6px 12px;
+  background: #4a90d9;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.songs-list-section .load-btn:hover {
+  background: #357abd;
+}
+
+.songs-list-section .delete-btn {
+  padding: 6px 10px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.songs-list-section .delete-btn:hover {
+  background: #c0392b;
+}
+
+.songs-list-section .no-songs {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+}
+
+.error-msg {
+  color: #e74c3c;
+  background: rgba(231, 76, 60, 0.1);
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.staff-preview-section {
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.staff-preview-section h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.staff-preview-section .staff-section {
+  background: white;
+  border-radius: 4px;
+  padding: 20px;
+  overflow-x: auto;
+  min-height: 200px;
+}
+
+.staff-preview-section .no-selection {
+  text-align: center;
+  color: #666;
+  padding: 60px 20px;
+}
