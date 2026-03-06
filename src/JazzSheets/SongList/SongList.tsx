@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import type { Song, Note, Chord } from '#shared/types';
 import './SongList.css';
 
@@ -19,7 +19,7 @@ export const SongList: React.FC<SongListProps> = ({
   const [songName, setSongName] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {

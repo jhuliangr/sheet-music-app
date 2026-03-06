@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
+import * as Tone from 'tone';
 import { Staff } from './Staff';
 import { Palette } from './Palette';
 import { PlaybackControls } from './PlaybackControls';
@@ -17,6 +18,25 @@ import './JazzSheets.css';
 import { NOTE_WIDTH, STAFF_PADDING } from './Staff/utils/constants';
 
 let isInitializing = true;
+
+const pianoSampler = new Tone.Sampler({
+  urls: {
+    C4: 'C4.mp3',
+    'D#4': 'Ds4.mp3',
+    'F#4': 'Fs4.mp3',
+    A4: 'A4.mp3',
+  },
+  baseUrl: 'https://tonejs.github.io/audio/salamander/',
+  release: 1,
+}).toDestination();
+
+const noteNameToTone = (
+  note: string,
+  octave: number,
+  accidental: string,
+): string => {
+  return `${note}${accidental}${octave}`;
+};
 
 export function JazzSheets() {
   const [music, setMusic] = useState<(Note | Chord)[]>([]);
@@ -105,12 +125,40 @@ export function JazzSheets() {
     setMusic(newMusic);
   };
 
-  const handlePlay = useCallback(() => {
+  const handlePlay = useCallback(async () => {
     if (music.length === 0) return;
+
+    await Tone.start();
+    Tone.getTransport().bpm.value = tempo;
 
     setIsPlaying(true);
     positionRef.current = currentPosition;
     lastTimeRef.current = performance.now();
+
+    const playNote = (noteItem: Note | Chord, beatPosition: number) => {
+      if ('isRest' in noteItem && noteItem.isRest) return;
+      if (!noteItem.note) return;
+
+      const noteString = noteNameToTone(
+        noteItem.note,
+        'octave' in noteItem ? noteItem.octave : 4,
+        noteItem.accidental,
+      );
+      const duration = DURATION_BEATS[noteItem.duration] / (tempo / 60);
+
+      pianoSampler.triggerAttackRelease(
+        noteString,
+        duration,
+        Tone.getTransport().seconds + beatPosition / (tempo / 60),
+      );
+    };
+
+    let currentBeat = 0;
+    music.forEach((noteItem) => {
+      const beats = DURATION_BEATS[noteItem.duration];
+      playNote(noteItem, currentBeat);
+      currentBeat += beats;
+    });
 
     const animate = (time: number) => {
       const delta = (time - lastTimeRef.current) / 1000;
@@ -132,7 +180,7 @@ export function JazzSheets() {
     };
 
     animationRef.current = requestAnimationFrame(animate);
-  }, [music.length, tempo, currentPosition, getTotalBeats]);
+  }, [music, tempo, currentPosition, getTotalBeats]);
 
   const handlePause = useCallback(() => {
     setIsPlaying(false);
@@ -149,6 +197,7 @@ export function JazzSheets() {
     }
     positionRef.current = 0;
     setCurrentPosition(0);
+    pianoSampler.releaseAll();
   }, []);
 
   const handleTempoChange = useCallback((newTempo: number) => {

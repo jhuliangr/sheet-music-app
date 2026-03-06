@@ -45,6 +45,15 @@ export function Songs() {
     );
   }, [music]);
 
+  const handleStop = useCallback(() => {
+    setIsPlaying(false);
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+    positionRef.current = 0;
+    setCurrentPosition(0);
+  }, []);
+
   const handleLoadSong = useCallback((song: Song) => {
     setSelectedSong(song);
     setMusic(song.notesAndChords);
@@ -103,15 +112,6 @@ export function Songs() {
       cancelAnimationFrame(animationRef.current);
     }
     setCurrentPosition(positionRef.current);
-  }, []);
-
-  const handleStop = useCallback(() => {
-    setIsPlaying(false);
-    if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current);
-    }
-    positionRef.current = 0;
-    setCurrentPosition(0);
   }, []);
 
   const handleTempoChange = useCallback((newTempo: number) => {
