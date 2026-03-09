@@ -2,6 +2,7 @@ import {
   createRouter,
   createRootRoute,
   createRoute,
+  createHashHistory,
 } from '@tanstack/react-router';
 import { JazzSheets } from './JazzSheets';
 import { Songs } from './Songs';
@@ -27,7 +28,7 @@ const routeTree = rootRoute.addChildren([indexRoute, songsRoute]);
 
 export const router = createRouter({
   routeTree,
-  basepath: import.meta.env.BASE_URL,
+  history: createHashHistory(),
 });
 
 declare module '@tanstack/react-router' {
