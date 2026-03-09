@@ -38,7 +38,7 @@ describe('AppLayout', () => {
   it('renders the subtitle', () => {
     render(<AppLayout />);
     expect(
-      screen.getByText('Create and play back sheet music in American notation'),
+      screen.getByText('Create and play back sheet music in Western Notation'),
     ).toBeInTheDocument();
   });
 });

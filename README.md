@@ -4,7 +4,7 @@
 
 - **Project Name**: Sheet Music
 - **Type**: React Web Application (TypeScript)
-- **Core Functionality**: Create, save, and playback sheet music using American notation (A-G) with tempo control and visual playback progress
+- **Core Functionality**: Create, save, and playback sheet music using Western Notation (A-G) with tempo control and visual playback progress
 - **Target Users**: Musicians, students, hobbyists who want to write simple melodies 
 
 ### Core Features
