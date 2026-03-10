@@ -1,4 +1,4 @@
-import { LINE_SPACING, STAFF_TOP } from "./constants";
+import { LINE_SPACING, STAFF_TOP } from '#shared/constants';
 
 export const renderLedgerLines = (noteY: number): React.ReactNode => {
     const ledgerLines: number[] = [];

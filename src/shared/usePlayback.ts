@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
-import { DURATION_BEATS } from './constants';
-import { Note, Chord } from './types';
+import { DURATION_BEATS } from '#shared/constants';
+import { type Note, type Chord } from '#shared/types';
 import * as Tone from 'tone';
 
 export const usePlayback = (

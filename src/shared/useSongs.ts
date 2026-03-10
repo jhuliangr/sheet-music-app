@@ -1,15 +1,15 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { STAFF_PADDING, NOTE_WIDTH } from '../JazzSheets/Staff/utils';
+import { STAFF_PADDING, NOTE_WIDTH } from '#shared/constants';
 
 import {
-  Note,
-  Chord,
-  NoteName,
-  Duration,
-  Accidental,
+  type Note,
+  type Chord,
+  type NoteName,
+  type Duration,
+  type Accidental,
   generateId,
-  Song,
-} from './types';
+  type Song,
+} from '#shared/types';
 import { usePlayback } from './usePlayback';
 
 export const useSongs = (isInitializing: boolean) => {
