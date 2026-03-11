@@ -7,6 +7,7 @@ import {
   type NoteName,
   type Duration,
   type Accidental,
+  type ChordQuality,
   generateId,
   type Song,
 } from '#shared/types';
@@ -33,6 +34,8 @@ export const useSongs = () => {
   const [selectedNote, setSelectedNote] = useState<NoteName | null>('C');
   const [selectedNoteOctave, setSelectedNoteOctave] = useState<number>(4);
   const [selectedChord, setSelectedChord] = useState<NoteName | null>(null);
+  const [selectedChordQuality, setSelectedChordQuality] =
+    useState<ChordQuality>('major');
 
   const [selectedDuration, setSelectedDuration] = useState<Duration>('quarter');
   const [selectedAccidental, setSelectedAccidental] = useState<Accidental>('');
@@ -94,6 +97,7 @@ export const useSongs = () => {
         duration: selectedDuration,
         position: maxPosition,
         accidental: selectedAccidental,
+        quality: selectedChordQuality,
         features: [],
       };
     }
@@ -229,6 +233,8 @@ export const useSongs = () => {
     setSelectedAccidental,
     setSelectedNoteOctave,
     setSelectedChord,
+    selectedChordQuality,
+    setSelectedChordQuality,
     isPlaying,
   };
 };

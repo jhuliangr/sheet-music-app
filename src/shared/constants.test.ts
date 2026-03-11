@@ -71,6 +71,7 @@ describe('shared/types', () => {
         position: 0,
         duration: 'quarter',
         accidental: '',
+        quality: 'major',
         features: [{ name: 'type', value: 'major' }],
       };
       expect(chord.note).toBe('C');

@@ -5,7 +5,7 @@ import { Staff } from './Staff';
 describe('JazzSheets/Staff/Staff', () => {
   const defaultProps = {
     music: [],
-    currentPosition: 0,
+    activeNoteId: null,
     isPlaying: false,
     onNoteClick: vi.fn(),
     onDelete: vi.fn(),

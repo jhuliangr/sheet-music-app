@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { Staff } from '../JazzSheets/Staff';
 import { PlaybackControls } from '../JazzSheets/PlaybackControls';
@@ -126,6 +126,21 @@ export function Songs() {
     setTempo(newTempo);
   }, []);
 
+  const activeNoteId = useMemo(() => {
+    let accumulated = 0;
+    for (const note of music) {
+      const noteDuration = DURATION_BEATS[note.duration];
+      if (
+        currentPosition >= accumulated &&
+        currentPosition < accumulated + noteDuration
+      ) {
+        return note.id;
+      }
+      accumulated += noteDuration;
+    }
+    return null;
+  }, [currentPosition, music]);
+
   const handleMaximumWidthChange = useCallback(
     (actualWidth: number) => {
       lastWidthRef.current = actualWidth;
@@ -234,7 +249,7 @@ export function Songs() {
                     <Staff
                       key={row.position}
                       music={row.notes}
-                      currentPosition={currentPosition}
+                      activeNoteId={activeNoteId}
                       isPlaying={isPlaying}
                       onDelete={() => {}}
                       onMaximumWidthChange={
@@ -247,7 +262,7 @@ export function Songs() {
                 {rowsStaff.length === 0 && (
                   <Staff
                     music={music}
-                    currentPosition={currentPosition}
+                    activeNoteId={activeNoteId}
                     isPlaying={isPlaying}
                     onDelete={() => {}}
                     onMaximumWidthChange={handleMaximumWidthChange}

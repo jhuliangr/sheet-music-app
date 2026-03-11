@@ -1,11 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Staff } from './Staff';
 import { Palette } from './Palette';
 import { PlaybackControls } from './PlaybackControls';
 import { SongList } from './SongList';
 import { useSongs } from '#shared/useSongs';
 import { DURATION_BEATS } from '#shared/constants';
-import type { ChordQuality, NoteName } from '#shared/types';
+import type { NoteName } from '#shared/types';
 import './JazzSheets.css';
 
 export function JazzSheets() {
@@ -37,10 +37,9 @@ export function JazzSheets() {
     setSelectedDuration,
     setSelectedAccidental,
     setSelectedNoteOctave,
+    selectedChordQuality,
+    setSelectedChordQuality,
   } = useSongs();
-
-  const [selectedChordQuality, setSelectedChordQuality] =
-    useState<ChordQuality>('major');
 
   const activeNoteId = useMemo(() => {
     let accumulated = 0;

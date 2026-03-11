@@ -1,12 +1,18 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { Palette } from './Palette';
-import type { Accidental, Duration, NoteName } from '#shared/types';
+import type {
+  Accidental,
+  ChordQuality,
+  Duration,
+  NoteName,
+} from '#shared/types';
 
 describe('JazzSheets/Palette/Palette', () => {
   const defaultProps = {
     selectedNote: null as NoteName | null,
     selectedChord: null as NoteName | null,
+    selectedChordQuality: 'major' as ChordQuality,
     selectedDuration: 'quarter' as Duration,
     selectedAccidental: '' as Accidental,
     isRest: false,
@@ -14,6 +20,7 @@ describe('JazzSheets/Palette/Palette', () => {
     setSelectedNoteOctave: vi.fn(),
     onNoteSelect: vi.fn(),
     onChordSelect: vi.fn(),
+    onChordQualitySelect: vi.fn(),
     onDurationSelect: vi.fn(),
     onAccidentalToggle: vi.fn(),
     onRestToggle: vi.fn(),
