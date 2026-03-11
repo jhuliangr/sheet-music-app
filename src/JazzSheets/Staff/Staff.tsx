@@ -11,7 +11,7 @@ import {
 
 interface StaffProps {
   music: (Note | Chord)[];
-  currentPosition: number;
+  activeNoteId: string | null;
   isPlaying: boolean;
   onNoteClick?: (position: number) => void;
   onDelete: (id: string) => void;
@@ -21,7 +21,7 @@ interface StaffProps {
 
 export const Staff: React.FC<StaffProps> = ({
   music,
-  currentPosition,
+  activeNoteId,
   onNoteClick,
   onDelete,
   onMaximumWidthChange,
@@ -58,7 +58,7 @@ export const Staff: React.FC<StaffProps> = ({
         );
       }
 
-      const isActive = noteOrChord.position === Math.floor(currentPosition);
+      const isActive = noteOrChord.id === activeNoteId;
 
       return (
         <div
@@ -80,9 +80,10 @@ export const Staff: React.FC<StaffProps> = ({
                 noteOrChord.duration === 'whole' ? 'none' : 'rotate(-10deg)',
             }}
           />
-          {noteOrChord.duration !== 'whole' && (
-            <div className="note-stem" style={{ top: y + 3 }} />
-          )}
+          {noteOrChord.duration !== 'whole' &&
+            noteOrChord.duration !== 'half' && (
+              <div className="note-stem" style={{ top: y + 3 }} />
+            )}
           {noteOrChord.duration === 'eighth' && (
             <div className="note-flag" style={{ top: y + 27 }} />
           )}
@@ -101,6 +102,9 @@ export const Staff: React.FC<StaffProps> = ({
       );
     }
     // Is a chord :D
+    const qualityLabel =
+      noteOrChord.quality === 'major' ? '' : (noteOrChord.quality ?? '');
+
     return (
       <div
         className="chord"
@@ -117,6 +121,7 @@ export const Staff: React.FC<StaffProps> = ({
         {noteOrChord.accidental === 'b' && (
           <span className="accidental flat for-chord">♭</span>
         )}
+        {qualityLabel && <span className="chord-quality">{qualityLabel}</span>}
       </div>
     );
   };

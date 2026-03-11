@@ -1,6 +1,17 @@
 export type NoteName = 'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B';
 export type Accidental = '' | '#' | 'b';
 export type Duration = 'whole' | 'half' | 'quarter' | 'eighth';
+export type ChordQuality =
+  | 'major'
+  | 'minor'
+  | 'maj7'
+  | 'm7'
+  | '7'
+  | 'maj9'
+  | 'm9'
+  | '9'
+  | 'm11'
+  | '11';
 
 export interface Note {
   id: string;
@@ -18,6 +29,7 @@ export interface Chord {
   position: number;
   duration: Duration;
   accidental: Accidental;
+  quality: ChordQuality;
   features: Feature[];
 }
 

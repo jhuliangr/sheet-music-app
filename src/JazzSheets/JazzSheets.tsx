@@ -5,18 +5,26 @@ import { Palette } from './Palette';
 import { PlaybackControls } from './PlaybackControls';
 import { SongList } from './SongList';
 import { generateId } from '#shared/types';
-import { DURATION_BEATS } from '#shared/constants';
+import {
+  DURATION_BEATS,
+  CHORD_INTERVALS,
+  NOTE_TO_SEMITONE,
+  ACCIDENTAL_OFFSET,
+  SEMITONE_TO_NOTE,
+} from '#shared/constants';
 import type {
   Note,
   NoteName,
   Duration,
   Accidental,
   Chord,
+  ChordQuality,
   Song,
 } from '#shared/types';
 import './JazzSheets.css';
 import { NOTE_WIDTH, STAFF_PADDING } from './Staff/utils/constants';
 
+const masterGain = new Tone.Gain(1).toDestination();
 const pianoSampler = new Tone.Sampler({
   urls: {
     C4: 'C4.mp3',
@@ -26,7 +34,7 @@ const pianoSampler = new Tone.Sampler({
   },
   baseUrl: 'https://tonejs.github.io/audio/salamander/',
   release: 1,
-}).toDestination();
+}).connect(masterGain);
 
 const noteNameToTone = (
   note: string,
@@ -44,13 +52,15 @@ export function JazzSheets() {
   const [selectedNote, setSelectedNote] = useState<NoteName | null>('C');
   const [selectedNoteOctave, setSelectedNoteOctave] = useState<number>(4);
   const [selectedChord, setSelectedChord] = useState<NoteName | null>('C');
+  const [selectedChordQuality, setSelectedChordQuality] =
+    useState<ChordQuality>('major');
 
   const [selectedDuration, setSelectedDuration] = useState<Duration>('quarter');
   const [selectedAccidental, setSelectedAccidental] = useState<Accidental>('');
   const [isRest, setIsRest] = useState<boolean>(false);
   const [tempo, setTempo] = useState<number>(120);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [currentPosition, setCurrentPosition] = useState<number>(0);
+  const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
 
   const animationRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number>(0);
@@ -103,6 +113,7 @@ export function JazzSheets() {
         duration: selectedDuration,
         position: maxPosition,
         accidental: selectedAccidental,
+        quality: selectedChordQuality,
         features: [],
       };
     }
@@ -117,36 +128,84 @@ export function JazzSheets() {
     if (music.length === 0) return;
 
     await Tone.start();
+
+    // Cancel any previously scheduled transport events and reset
+    Tone.getTransport().cancel(0);
+    Tone.getTransport().stop();
     Tone.getTransport().bpm.value = tempo;
 
     setIsPlaying(true);
-    positionRef.current = currentPosition;
+    positionRef.current = 0;
+    setActiveNoteId(null);
     lastTimeRef.current = performance.now();
 
-    const playNote = (noteItem: Note | Chord, beatPosition: number) => {
-      if ('isRest' in noteItem && noteItem.isRest) return;
-      if (!noteItem.note) return;
-
-      const noteString = noteNameToTone(
-        noteItem.note,
-        'octave' in noteItem ? noteItem.octave : 4,
-        noteItem.accidental,
-      );
-      const duration = DURATION_BEATS[noteItem.duration] / (tempo / 60);
-
-      pianoSampler.triggerAttackRelease(
-        noteString,
-        duration,
-        Tone.getTransport().seconds + beatPosition / (tempo / 60),
-      );
+    const getChordNotes = (chord: Chord): string[] => {
+      if (!chord.note) return [];
+      const rootMidi =
+        12 * (4 + 1) +
+        NOTE_TO_SEMITONE[chord.note] +
+        ACCIDENTAL_OFFSET[chord.accidental];
+      const quality: ChordQuality = chord.quality ?? 'major';
+      return CHORD_INTERVALS[quality].map((interval) => {
+        const midi = rootMidi + interval;
+        const octave = Math.floor(midi / 12) - 1;
+        const noteName = SEMITONE_TO_NOTE[midi % 12];
+        return `${noteName}${octave}`;
+      });
     };
 
     let currentBeat = 0;
     music.forEach((noteItem) => {
       const beats = DURATION_BEATS[noteItem.duration];
-      playNote(noteItem, currentBeat);
+
+      if (!('isRest' in noteItem && noteItem.isRest) && noteItem.note) {
+        const beatOffset = currentBeat;
+        const duration = DURATION_BEATS[noteItem.duration] / (tempo / 60);
+
+        if ('features' in noteItem) {
+          const notes = getChordNotes(noteItem);
+          if (notes.length > 0) {
+            Tone.getTransport().schedule(
+              (time) => {
+                pianoSampler.triggerAttackRelease(notes, duration, time);
+              },
+              beatOffset / (tempo / 60),
+            );
+          }
+        } else {
+          const noteString = noteNameToTone(
+            noteItem.note,
+            noteItem.octave,
+            noteItem.accidental,
+          );
+          Tone.getTransport().schedule(
+            (time) => {
+              pianoSampler.triggerAttackRelease(noteString, duration, time);
+            },
+            beatOffset / (tempo / 60),
+          );
+        }
+      }
+
       currentBeat += beats;
     });
+
+    Tone.getTransport().start();
+
+    const computeActiveNoteId = (beatPosition: number): string | null => {
+      let accumulated = 0;
+      for (const note of music) {
+        const noteDuration = DURATION_BEATS[note.duration];
+        if (
+          beatPosition >= accumulated &&
+          beatPosition < accumulated + noteDuration
+        ) {
+          return note.id;
+        }
+        accumulated += noteDuration;
+      }
+      return null;
+    };
 
     const animate = (time: number) => {
       const delta = (time - lastTimeRef.current) / 1000;
@@ -158,24 +217,28 @@ export function JazzSheets() {
       const totalBeats = getTotalBeats();
       if (positionRef.current >= totalBeats) {
         positionRef.current = 0;
-        setCurrentPosition(0);
+        setActiveNoteId(null);
         setIsPlaying(false);
+        Tone.getTransport().stop();
+        Tone.getTransport().cancel(0);
         return;
       }
 
-      setCurrentPosition(positionRef.current);
+      setActiveNoteId(computeActiveNoteId(positionRef.current));
       animationRef.current = requestAnimationFrame(animate);
     };
 
     animationRef.current = requestAnimationFrame(animate);
-  }, [music, tempo, currentPosition, getTotalBeats]);
+  }, [music, tempo, getTotalBeats]);
 
   const handlePause = useCallback(() => {
     setIsPlaying(false);
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
     }
-    setCurrentPosition(positionRef.current);
+    Tone.getTransport().stop();
+    Tone.getTransport().cancel(0);
+    pianoSampler.releaseAll();
   }, []);
 
   const handleStop = useCallback(() => {
@@ -184,7 +247,9 @@ export function JazzSheets() {
       cancelAnimationFrame(animationRef.current);
     }
     positionRef.current = 0;
-    setCurrentPosition(0);
+    setActiveNoteId(null);
+    Tone.getTransport().stop();
+    Tone.getTransport().cancel(0);
     pianoSampler.releaseAll();
   }, []);
 
@@ -306,7 +371,7 @@ export function JazzSheets() {
               <Staff
                 key={row.position}
                 music={row.notes}
-                currentPosition={currentPosition}
+                activeNoteId={activeNoteId}
                 isPlaying={isPlaying}
                 onNoteClick={
                   index === rowsStaff.length - 1 ? handleNoteClick : undefined
@@ -322,7 +387,7 @@ export function JazzSheets() {
           <div className="single-staff" style={{ maxWidth: '100%' }}>
             <Staff
               music={music}
-              currentPosition={currentPosition}
+              activeNoteId={activeNoteId}
               isPlaying={isPlaying}
               onNoteClick={handleNoteClick}
               onDelete={handleDeletion}
@@ -335,6 +400,7 @@ export function JazzSheets() {
         <Palette
           selectedNote={selectedNote}
           selectedChord={selectedChord}
+          selectedChordQuality={selectedChordQuality}
           selectedDuration={selectedDuration}
           selectedAccidental={selectedAccidental}
           isRest={isRest}
@@ -342,6 +408,7 @@ export function JazzSheets() {
           setSelectedNoteOctave={setSelectedNoteOctave}
           onNoteSelect={handleNoteSelect}
           onChordSelect={handleChordSelect}
+          onChordQualitySelect={setSelectedChordQuality}
           onDurationSelect={setSelectedDuration}
           onAccidentalToggle={setSelectedAccidental}
           onRestToggle={() => setIsRest(!isRest)}

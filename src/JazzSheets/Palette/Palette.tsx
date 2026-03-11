@@ -1,12 +1,18 @@
 import React from 'react';
 import './Palette.css';
-import type { Accidental, Duration, NoteName } from '#shared/types';
-import { DURATIONS, NOTE_NAMES } from '#shared/constants';
+import type {
+  Accidental,
+  ChordQuality,
+  Duration,
+  NoteName,
+} from '#shared/types';
+import { CHORD_QUALITIES, DURATIONS, NOTE_NAMES } from '#shared/constants';
 import { Button } from '@radix-ui/themes';
 
 interface PaletteProps {
   selectedNote: NoteName | null;
   selectedChord: NoteName | null;
+  selectedChordQuality: ChordQuality;
   selectedDuration: Duration;
   selectedAccidental: Accidental;
   isRest: boolean;
@@ -14,6 +20,7 @@ interface PaletteProps {
   setSelectedNoteOctave: React.Dispatch<React.SetStateAction<number>>;
   onNoteSelect: (note: NoteName) => void;
   onChordSelect: (note: NoteName) => void;
+  onChordQualitySelect: (quality: ChordQuality) => void;
   onDurationSelect: (duration: Duration) => void;
   onAccidentalToggle: (accidental: Accidental) => void;
   onRestToggle: () => void;
@@ -23,11 +30,13 @@ interface PaletteProps {
 export const Palette: React.FC<PaletteProps> = ({
   selectedNote,
   selectedChord,
+  selectedChordQuality,
   selectedDuration,
   selectedAccidental,
   isRest,
   onNoteSelect,
   onChordSelect,
+  onChordQualitySelect,
   onDurationSelect,
   onAccidentalToggle,
   onRestToggle,
@@ -92,6 +101,17 @@ export const Palette: React.FC<PaletteProps> = ({
               onClick={() => onChordSelect(note)}
             >
               {note}
+            </Button>
+          ))}
+        </div>
+        <div className="palette-buttons" style={{ marginTop: '8px' }}>
+          {CHORD_QUALITIES.map((quality) => (
+            <Button
+              key={quality}
+              className={`palette-btn ${selectedChordQuality === quality ? 'active' : ''}`}
+              onClick={() => onChordQualitySelect(quality)}
+            >
+              {quality}
             </Button>
           ))}
         </div>
