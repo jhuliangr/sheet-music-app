@@ -1,6 +1,12 @@
 import { useCallback, useRef, useState } from 'react';
-import { DURATION_BEATS } from '#shared/constants';
-import { type Note, type Chord } from '#shared/types';
+import {
+  DURATION_BEATS,
+  CHORD_INTERVALS,
+  NOTE_TO_SEMITONE,
+  ACCIDENTAL_OFFSET,
+  SEMITONE_TO_NOTE,
+} from '#shared/constants';
+import { type Note, type Chord, type ChordQuality } from '#shared/types';
 import * as Tone from 'tone';
 
 export const usePlayback = (music: (Note | Chord)[]) => {
@@ -48,22 +54,41 @@ export const usePlayback = (music: (Note | Chord)[]) => {
     positionRef.current = currentPosition;
     lastTimeRef.current = performance.now();
 
+    const getChordNotes = (chord: Chord): string[] => {
+      if (!chord.note) return [];
+      const rootMidi =
+        12 * (4 + 1) +
+        NOTE_TO_SEMITONE[chord.note] +
+        ACCIDENTAL_OFFSET[chord.accidental ?? ''];
+      const quality: ChordQuality = chord.quality ?? 'major';
+      return CHORD_INTERVALS[quality].map((interval) => {
+        const midi = rootMidi + interval;
+        const octave = Math.floor(midi / 12) - 1;
+        const noteName = SEMITONE_TO_NOTE[midi % 12];
+        return `${noteName}${octave}`;
+      });
+    };
+
     const playNote = (noteItem: Note | Chord, beatPosition: number) => {
       if ('isRest' in noteItem && noteItem.isRest) return;
       if (!noteItem.note) return;
 
-      const noteString = noteNameToTone(
-        noteItem.note,
-        'octave' in noteItem ? noteItem.octave : 4,
-        noteItem.accidental,
-      );
       const duration = DURATION_BEATS[noteItem.duration] / (tempo / 60);
+      const time = Tone.getTransport().seconds + beatPosition / (tempo / 60);
 
-      pianoSampler.triggerAttackRelease(
-        noteString,
-        duration,
-        Tone.getTransport().seconds + beatPosition / (tempo / 60),
-      );
+      if ('features' in noteItem) {
+        const notes = getChordNotes(noteItem);
+        if (notes.length > 0) {
+          pianoSampler.triggerAttackRelease(notes, duration, time);
+        }
+      } else {
+        const noteString = noteNameToTone(
+          noteItem.note,
+          noteItem.octave,
+          noteItem.accidental,
+        );
+        pianoSampler.triggerAttackRelease(noteString, duration, time);
+      }
     };
 
     let currentBeat = 0;
