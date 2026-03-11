@@ -67,3 +67,8 @@ export const SEMITONE_TO_NOTE = [
   'A#',
   'B',
 ];
+export const STAFF_TOP = 60;
+export const LINE_SPACING = 12;
+export const NOTE_WIDTH = 30;
+export const STAFF_PADDING = 40;
+export const BEATS_PER_MEASURE = 4;
