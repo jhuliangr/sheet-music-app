@@ -1,0 +1,145 @@
+.trivia-panel {
+  margin-top: 20px;
+  background: #1e1e2e;
+  border-radius: 8px;
+  padding: 16px;
+  color: #e0e0e0;
+}
+
+.trivia-panel h3 {
+  margin: 0 0 12px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a0a0c0;
+}
+
+.trivia-loading {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.trivia-skeleton {
+  height: 14px;
+  background: #333355;
+  border-radius: 4px;
+  animation: trivia-pulse 1.4s ease-in-out infinite;
+}
+
+.trivia-skeleton.short {
+  width: 60%;
+}
+
+@keyframes trivia-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.trivia-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.trivia-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+.trivia-category {
+  color: #a0a0c0;
+}
+
+.trivia-difficulty {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.trivia-question {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #f0f0f0;
+}
+
+.trivia-answers {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.trivia-answer-btn {
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  background: #2d2d44;
+  color: #e0e0e0;
+  border: 1px solid #444466;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.15s;
+}
+
+.trivia-answer-btn:hover:not(:disabled) {
+  background: #3d3d5c;
+}
+
+.trivia-answer-btn.correct {
+  background: #1a4a2a;
+  border-color: #27ae60;
+  color: #7dcea0;
+}
+
+.trivia-answer-btn.wrong {
+  background: #4a1a1a;
+  border-color: #e74c3c;
+  color: #f1948a;
+}
+
+.trivia-answer-btn.disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.trivia-result {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.trivia-btn {
+  padding: 7px 12px;
+  background: #4a90d9;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.trivia-btn:hover {
+  background: #357abd;
+}
+
+.trivia-btn.next-btn {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.trivia-error {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  color: #f1948a;
+}

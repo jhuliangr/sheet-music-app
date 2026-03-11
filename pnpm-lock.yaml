@@ -19,6 +19,9 @@ importers:
       react-dom:
         specifier: ^19.2.0
         version: 19.2.4(react@19.2.4)
+      react-error-boundary:
+        specifier: ^6.1.1
+        version: 6.1.1(react@19.2.4)
       tone:
         specifier: ^15.1.22
         version: 15.1.22
@@ -3071,6 +3074,14 @@ packages:
     peerDependencies:
       react: ^19.2.4
 
+  react-error-boundary@6.1.1:
+    resolution:
+      {
+        integrity: sha512-BrYwPOdXi5mqkk5lw+Uvt0ThHx32rCt3BkukS4X23A2AIWDPSGX6iaWTc0y9TU/mHDA/6qOSGel+B2ERkOvD1w==,
+      }
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0
+
   react-is@17.0.2:
     resolution:
       {
@@ -5624,6 +5635,10 @@ snapshots:
     dependencies:
       react: 19.2.4
       scheduler: 0.27.0
+
+  react-error-boundary@6.1.1(react@19.2.4):
+    dependencies:
+      react: 19.2.4
 
   react-is@17.0.2: {}
 

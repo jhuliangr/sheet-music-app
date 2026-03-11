@@ -32,7 +32,6 @@ export const Staff: React.FC<StaffProps> = ({
     };
 
     if (!('features' in noteOrChord)) {
-      //Todo type verification
       const y = getNoteY(noteOrChord);
 
       if (noteOrChord.isRest) {

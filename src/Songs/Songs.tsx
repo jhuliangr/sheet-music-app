@@ -2,13 +2,15 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { Staff } from '../JazzSheets/Staff';
 import { PlaybackControls } from '../JazzSheets/PlaybackControls';
+import { MusicTrivia } from './MusicTrivia';
 import type { Song, Note, Chord } from '#shared/types';
 import { DURATION_BEATS, NOTE_WIDTH, STAFF_PADDING } from '#shared/constants';
+import { usePlayback } from '#shared/usePlayback';
 import './Songs.css';
 
 const STORAGE_KEY = 'sheet-music-songs';
 
-export function Songs() {
+export const Songs: React.FC = () => {
   const navigate = useNavigate();
   const [songs, setSongs] = useState<Song[]>(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -21,9 +23,6 @@ export function Songs() {
   });
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
   const [music, setMusic] = useState<(Note | Chord)[]>([]);
-  const [tempo, setTempo] = useState<number>(120);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [currentPosition, setCurrentPosition] = useState<number>(0);
   const [rowsStaff, setRowsStaff] = useState<
     { notes: (Note | Chord)[]; position: number }[]
   >([]);
@@ -38,26 +37,34 @@ export function Songs() {
     }
   });
 
-  const animationRef = useRef<number | null>(null);
-  const lastTimeRef = useRef<number>(0);
-  const positionRef = useRef<number>(0);
   const lastWidthRef = useRef(0);
 
-  const getTotalBeats = useCallback(() => {
-    return music.reduce(
-      (total, note) => total + DURATION_BEATS[note.duration],
-      0,
-    );
-  }, [music]);
+  const {
+    handlePlay,
+    handlePause,
+    handleStop,
+    handleTempoChange,
+    isPlaying,
+    tempo,
+    currentPosition,
+    animationRef,
+    setTempo,
+  } = usePlayback(music);
 
-  const handleStop = useCallback(() => {
-    setIsPlaying(false);
-    if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current);
+  const activeNoteId = useMemo(() => {
+    let accumulated = 0;
+    for (const note of music) {
+      const noteDuration = DURATION_BEATS[note.duration];
+      if (
+        currentPosition >= accumulated &&
+        currentPosition < accumulated + noteDuration
+      ) {
+        return note.id;
+      }
+      accumulated += noteDuration;
     }
-    positionRef.current = 0;
-    setCurrentPosition(0);
-  }, []);
+    return null;
+  }, [currentPosition, music]);
 
   const handleLoadSong = useCallback(
     (song: Song) => {
@@ -66,7 +73,7 @@ export function Songs() {
       setTempo(song.tempo);
       handleStop();
     },
-    [handleStop],
+    [handleStop, setTempo],
   );
 
   const handleDeleteSong = (id: string) => {
@@ -84,62 +91,6 @@ export function Songs() {
       setMusic([]);
     }
   };
-
-  const handlePlay = useCallback(() => {
-    if (music.length === 0) return;
-
-    setIsPlaying(true);
-    positionRef.current = currentPosition;
-    lastTimeRef.current = performance.now();
-
-    const animate = (time: number) => {
-      const delta = (time - lastTimeRef.current) / 1000;
-      lastTimeRef.current = time;
-
-      const beatsPerSecond = tempo / 60;
-      positionRef.current += delta * beatsPerSecond;
-
-      const totalBeats = getTotalBeats();
-      if (positionRef.current >= totalBeats) {
-        positionRef.current = 0;
-        setCurrentPosition(0);
-        setIsPlaying(false);
-        return;
-      }
-
-      setCurrentPosition(positionRef.current);
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    animationRef.current = requestAnimationFrame(animate);
-  }, [music.length, tempo, currentPosition, getTotalBeats]);
-
-  const handlePause = useCallback(() => {
-    setIsPlaying(false);
-    if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current);
-    }
-    setCurrentPosition(positionRef.current);
-  }, []);
-
-  const handleTempoChange = useCallback((newTempo: number) => {
-    setTempo(newTempo);
-  }, []);
-
-  const activeNoteId = useMemo(() => {
-    let accumulated = 0;
-    for (const note of music) {
-      const noteDuration = DURATION_BEATS[note.duration];
-      if (
-        currentPosition >= accumulated &&
-        currentPosition < accumulated + noteDuration
-      ) {
-        return note.id;
-      }
-      accumulated += noteDuration;
-    }
-    return null;
-  }, [currentPosition, music]);
 
   const handleMaximumWidthChange = useCallback(
     (actualWidth: number) => {
@@ -187,12 +138,12 @@ export function Songs() {
   }, [music, handleMaximumWidthChange]);
 
   useEffect(() => {
+    const ref = animationRef;
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
+      const frameId = ref.current;
+      if (frameId != null) cancelAnimationFrame(frameId);
     };
-  }, []);
+  }, [animationRef]);
 
   return (
     <div className="songs-page">
@@ -237,6 +188,7 @@ export function Songs() {
               </div>
             ))
           )}
+          <MusicTrivia />
         </div>
 
         <div className="staff-preview-section">
@@ -285,4 +237,4 @@ export function Songs() {
       </div>
     </div>
   );
-}
+};

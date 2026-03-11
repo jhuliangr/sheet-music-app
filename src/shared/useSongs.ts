@@ -132,19 +132,11 @@ export const useSongs = () => {
     };
   }, [animationRef]);
 
-  /**
-   * We pass the actual width of the staff and we use it to calculate the number of notes per row
-   * We calculate internally the max width of the staff and we use it to calculate the number of notes per row
-   *
-   * @param actualWidth - The actual width of the staff
-   * @returns void
-   */
   const handleMaximumWidthChange = useCallback(
     (actualWidth: number) => {
       lastWidthRef.current = actualWidth;
       const width = STAFF_PADDING * 2 + (music.length + 1) * NOTE_WIDTH;
 
-      //We have enough space, we don't need to have more rows
       if (actualWidth >= width) {
         setRowsStaff([
           {
@@ -155,12 +147,6 @@ export const useSongs = () => {
         return;
       }
 
-      /**
-       *
-       * @param arr - The array of notes or chords
-       * @param notesPerRow - The number of notes per row
-       * @returns The array of notes or chords grouped by the number of notes per row
-       */
       const chunkMusic = (
         arr: (Note | Chord)[],
         notesPerRow: number,
@@ -175,7 +161,6 @@ export const useSongs = () => {
       const usableWidth = actualWidth - 2 * STAFF_PADDING;
       const notesPerRow = Math.max(1, Math.floor(usableWidth / NOTE_WIDTH));
 
-      //We set the rows staff
       setRowsStaff(
         chunkMusic(music, notesPerRow).map((chunk, index) => ({
           notes: chunk.map((note, i) => ({ ...note, position: i })),
@@ -186,8 +171,6 @@ export const useSongs = () => {
     [music],
   );
 
-  //useEffect for reacting to changes in the music array and saving the music to the localStorage
-  //and for handling the maximum width change of the staff
   useEffect(() => {
     if (!skipInitialSave.current) {
       skipInitialSave.current = true;

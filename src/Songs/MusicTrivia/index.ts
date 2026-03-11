@@ -1,0 +1,1 @@
+export { MusicTrivia } from './MusicTrivia';
