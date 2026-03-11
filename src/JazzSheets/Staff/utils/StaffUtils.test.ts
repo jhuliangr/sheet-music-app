@@ -5,7 +5,7 @@ import {
   STAFF_PADDING,
   STAFF_TOP,
   BEATS_PER_MEASURE,
-} from './constants';
+} from '#shared/constants';
 import { getNoteY, noteToYPosition } from './getNoteY';
 import { renderStaffLines } from './renderStaffLines';
 import { renderLedgerLines } from './renderLedgerLines';

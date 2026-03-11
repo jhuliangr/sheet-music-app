@@ -1,13 +1,8 @@
 import React, { useEffect, useRef, type MouseEvent } from 'react';
 import type { Chord, Note } from '#shared/types';
+import { NOTE_WIDTH, STAFF_PADDING } from '#shared/constants';
 import './Staff.css';
-import {
-  getNoteY,
-  NOTE_WIDTH,
-  renderLedgerLines,
-  renderStaffLines,
-  STAFF_PADDING,
-} from './utils';
+import { getNoteY, renderLedgerLines, renderStaffLines } from './utils';
 
 interface StaffProps {
   music: (Note | Chord)[];

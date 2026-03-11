@@ -3,8 +3,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { Staff } from '../JazzSheets/Staff';
 import { PlaybackControls } from '../JazzSheets/PlaybackControls';
 import type { Song, Note, Chord } from '#shared/types';
-import { DURATION_BEATS } from '#shared/constants';
-import { NOTE_WIDTH, STAFF_PADDING } from '../JazzSheets/Staff/utils/constants';
+import { DURATION_BEATS, NOTE_WIDTH, STAFF_PADDING } from '#shared/constants';
 import './Songs.css';
 
 const STORAGE_KEY = 'sheet-music-songs';
