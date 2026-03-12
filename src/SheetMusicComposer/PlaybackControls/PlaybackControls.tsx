@@ -1,5 +1,5 @@
 import React from 'react';
-import './PlaybackControls.css';
+import styles from './PlaybackControls.module.css';
 import { usePlaybackContext } from '../usePlaybackContext';
 
 export const PlaybackControls: React.FC = () => {
@@ -13,23 +13,26 @@ export const PlaybackControls: React.FC = () => {
   } = usePlaybackContext();
 
   return (
-    <div className="playback-controls">
-      <div className="transport-controls">
+    <div className={styles['playback-controls']}>
+      <div className={styles['transport-controls']}>
         {!isPlaying ? (
-          <button className="control-btn play-btn" onClick={handlePlay}>
+          <button className={styles['control-btn']} onClick={handlePlay}>
             ▶ Play
           </button>
         ) : (
-          <button className="control-btn pause-btn" onClick={handlePause}>
+          <button className={styles['control-btn']} onClick={handlePause}>
             ⏸ Pause
           </button>
         )}
-        <button className="control-btn stop-btn" onClick={handleStop}>
+        <button
+          className={`${styles['control-btn']} ${styles['stop-btn']}`}
+          onClick={handleStop}
+        >
           ⏹ Stop
         </button>
       </div>
 
-      <div className="tempo-control">
+      <div className={styles['tempo-control']}>
         <label htmlFor="tempo-slider">Tempo: {tempo} BPM</label>
         <input
           id="tempo-slider"
@@ -38,7 +41,7 @@ export const PlaybackControls: React.FC = () => {
           max="200"
           value={tempo}
           onChange={(e) => handleTempoChange(Number(e.target.value))}
-          className="tempo-slider"
+          className={styles['tempo-slider']}
         />
       </div>
     </div>

@@ -1,4 +1,5 @@
 import type { TriviaQuestion } from './types';
+import styles from './MusicTrivia.module.css';
 
 type Props = {
   trivia?: TriviaQuestion;
@@ -17,9 +18,9 @@ export const TriviaView: React.FC<Props> = ({
 }) => {
   if (!trivia) {
     return (
-      <div className="trivia-loading">
-        <div className="trivia-skeleton" />
-        <div className="trivia-skeleton short" />
+      <div className={styles['trivia-loading']}>
+        <div className={styles['trivia-skeleton']} />
+        <div className={`${styles['trivia-skeleton']} ${styles.short}`} />
       </div>
     );
   }
@@ -31,22 +32,29 @@ export const TriviaView: React.FC<Props> = ({
   }[trivia.difficulty];
 
   return (
-    <div className="trivia-content">
-      <div className="trivia-meta">
-        <span className="trivia-category">{trivia.category}</span>
-        <span className="trivia-difficulty" style={{ color: difficultyColor }}>
+    <div className={styles['trivia-content']}>
+      <div className={styles['trivia-meta']}>
+        <span className={styles['trivia-category']}>{trivia.category}</span>
+        <span
+          className={styles['trivia-difficulty']}
+          style={{ color: difficultyColor }}
+        >
           {trivia.difficulty}
         </span>
       </div>
-      <p className="trivia-question">{trivia.question}</p>
-      <div className="trivia-answers">
+      <p className={styles['trivia-question']}>{trivia.question}</p>
+      <div className={styles['trivia-answers']}>
         {answers.map((answer) => {
-          let cls = 'trivia-answer-btn';
-          if (selected) {
-            if (answer === trivia.correct_answer) cls += ' correct';
-            else if (answer === selected) cls += ' wrong';
-            else cls += ' disabled';
-          }
+          const answerState = selected
+            ? answer === trivia.correct_answer
+              ? styles.correct
+              : answer === selected
+                ? styles.wrong
+                : styles.disabled
+            : '';
+          const cls = [styles['trivia-answer-btn'], answerState]
+            .filter(Boolean)
+            .join(' ');
           return (
             <button
               key={answer}
@@ -64,13 +72,16 @@ export const TriviaView: React.FC<Props> = ({
         })}
       </div>
       {selected && (
-        <p className="trivia-result">
+        <p className={styles['trivia-result']}>
           {selected === trivia.correct_answer
             ? '🎵 Correct!'
             : `The answer was: ${trivia.correct_answer}`}
         </p>
       )}
-      <button className="trivia-btn next-btn" onClick={onRefresh}>
+      <button
+        className={`${styles['trivia-btn']} ${styles['next-btn']}`}
+        onClick={onRefresh}
+      >
         Next Question
       </button>
     </div>

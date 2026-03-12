@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import type { Song } from '#shared/types';
 import { useSongsStore } from '#shared/stores/useSongsStore';
 import { generateId } from '#shared/utils';
-import './SongList.css';
+import styles from './SongList.module.css';
 import { useSheetMusicComposer } from '../useSheetMusicComposer';
 
 export const SongList: React.FC = () => {
@@ -36,43 +36,43 @@ export const SongList: React.FC = () => {
   };
 
   return (
-    <div className="song-list">
+    <div className={styles['song-list']}>
       <h3>Saved Songs</h3>
 
-      <div className="save-section">
+      <div className={styles['save-section']}>
         <input
           type="text"
           placeholder="Song name"
           value={songName}
           onChange={(e) => setSongName(e.target.value)}
-          className="song-name-input"
+          className={styles['song-name-input']}
         />
-        <button className="save-btn" onClick={saveSong}>
+        <button className={styles['save-btn']} onClick={saveSong}>
           Save
         </button>
       </div>
 
-      {error && <p className="error-msg">{error}</p>}
+      {error && <p className={styles['error-msg']}>{error}</p>}
 
-      <div className="songs-container">
+      <div className={styles['songs-container']}>
         {songs.length === 0 ? (
-          <p className="no-songs">No saved songs</p>
+          <p className={styles['no-songs']}>No saved songs</p>
         ) : (
           songs.map((song) => (
-            <div key={song.id} className="song-item">
-              <span className="song-name">{song.name}</span>
-              <span className="song-info">
+            <div key={song.id} className={styles['song-item']}>
+              <span className={styles['song-name']}>{song.name}</span>
+              <span className={styles['song-info']}>
                 {song.notesAndChords.length} notes - {song.tempo} BPM
               </span>
-              <div className="song-actions">
+              <div className={styles['song-actions']}>
                 <button
-                  className="load-btn"
+                  className={styles['load-btn']}
                   onClick={() => handleLoadSong(song)}
                 >
                   Load
                 </button>
                 <button
-                  className="delete-btn"
+                  className={styles['delete-btn']}
                   onClick={() => deleteSong(song.id)}
                 >
                   ✕

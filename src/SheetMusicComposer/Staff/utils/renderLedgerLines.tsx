@@ -1,4 +1,5 @@
 import { LINE_SPACING, STAFF_TOP } from '#shared/constants';
+import styles from '../Staff.module.css';
 
 export const renderLedgerLines = (noteY: number): React.ReactNode => {
   const ledgerLines: number[] = [];
@@ -24,6 +25,6 @@ export const renderLedgerLines = (noteY: number): React.ReactNode => {
   }
 
   return ledgerLines.map((y, i) => (
-    <div key={i} className="ledger-line" style={{ top: y }} />
+    <div key={i} className={styles['ledger-line']} style={{ top: y }} />
   ));
 };

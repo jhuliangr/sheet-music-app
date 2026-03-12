@@ -15,10 +15,6 @@
   justify-content: start;
 }
 
-.staff-row {
-  padding-block: 10px;
-}
-
 .staff-line {
   position: absolute;
   left: 5px;

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, type MouseEvent } from 'react';
 import type { Chord, Note } from '#shared/types';
 import { NOTE_WIDTH, STAFF_PADDING } from '#shared/constants';
-import './Staff.css';
+import styles from './Staff.module.css';
 import { getNoteY, renderLedgerLines, renderStaffLines } from './utils';
 
 interface StaffProps {
@@ -36,10 +36,14 @@ export const Staff: React.FC<StaffProps> = ({
         return (
           <div
             key={noteOrChord.id}
-            className={`note rest ${noteOrChord.duration}`}
+            className={[
+              styles.note,
+              styles.rest,
+              styles[noteOrChord.duration],
+            ].join(' ')}
             style={{ left: x }}
           >
-            <span className="rest-symbol">
+            <span className={styles['rest-symbol']}>
               {noteOrChord.duration === 'whole'
                 ? '𝄻'
                 : noteOrChord.duration === 'half'
@@ -55,7 +59,13 @@ export const Staff: React.FC<StaffProps> = ({
       return (
         <div
           key={noteOrChord.id}
-          className={`note ${noteOrChord.duration} ${isActive ? 'active' : ''}`}
+          className={[
+            styles.note,
+            styles[noteOrChord.duration],
+            isActive ? styles.active : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
           style={{ left: x, maxWidth: '100%' }}
           onClick={(e) => {
             e.stopPropagation();
@@ -64,7 +74,7 @@ export const Staff: React.FC<StaffProps> = ({
         >
           {renderLedgerLines(y)}
           <div
-            className="note-head"
+            className={styles['note-head']}
             style={{
               top: y,
               transform:
@@ -73,19 +83,25 @@ export const Staff: React.FC<StaffProps> = ({
           />
           {noteOrChord.duration !== 'whole' &&
             noteOrChord.duration !== 'half' && (
-              <div className="note-stem" style={{ top: y + 3 }} />
+              <div className={styles['note-stem']} style={{ top: y + 3 }} />
             )}
           {noteOrChord.duration === 'eighth' && (
-            <div className="note-flag" style={{ top: y + 27 }} />
+            <div className={styles['note-flag']} style={{ top: y + 27 }} />
           )}
           {noteOrChord.accidental === '#' && (
-            <span className="accidental sharp" style={{ top: y + 5 }}>
+            <span
+              className={`${styles.accidental} ${styles.sharp}`}
+              style={{ top: y + 5 }}
+            >
               ♯
             </span>
           )}
           {/* ♮ */}
           {noteOrChord.accidental === 'b' && (
-            <span className="accidental flat" style={{ top: y + 5 }}>
+            <span
+              className={`${styles.accidental} ${styles.flat}`}
+              style={{ top: y + 5 }}
+            >
               ♭
             </span>
           )}
@@ -98,7 +114,7 @@ export const Staff: React.FC<StaffProps> = ({
 
     return (
       <div
-        className="chord"
+        className={styles.chord}
         key={noteOrChord.id}
         style={{
           left: x,
@@ -107,12 +123,22 @@ export const Staff: React.FC<StaffProps> = ({
       >
         {noteOrChord.note}
         {noteOrChord.accidental === '#' && (
-          <span className="accidental sharp for-chord">♯</span>
+          <span
+            className={`${styles.accidental} ${styles.sharp} ${styles['for-chord']}`}
+          >
+            ♯
+          </span>
         )}
         {noteOrChord.accidental === 'b' && (
-          <span className="accidental flat for-chord">♭</span>
+          <span
+            className={`${styles.accidental} ${styles.flat} ${styles['for-chord']}`}
+          >
+            ♭
+          </span>
         )}
-        {qualityLabel && <span className="chord-quality">{qualityLabel}</span>}
+        {qualityLabel && (
+          <span className={styles['chord-quality']}>{qualityLabel}</span>
+        )}
       </div>
     );
   };
@@ -143,10 +169,10 @@ export const Staff: React.FC<StaffProps> = ({
   }, [music.length, onMaximumWidthChange]);
 
   return (
-    <div className="staff-container" ref={containerRef}>
-      <div className="staff-scroll" style={{ width: '100%' }}>
-        <div className="staff" style={{ minWidth: totalWidth }}>
-          <p className="clef">𝄞|</p>
+    <div className={styles['staff-container']} ref={containerRef}>
+      <div className={styles['staff-scroll']} style={{ width: '100%' }}>
+        <div className={styles.staff} style={{ minWidth: totalWidth }}>
+          <p className={styles.clef}>𝄞|</p>
           {renderStaffLines()}
           {music.map((noteOrChord) => renderNoteBarOrChord(noteOrChord))}
         </div>

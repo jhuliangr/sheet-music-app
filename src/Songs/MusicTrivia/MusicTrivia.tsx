@@ -1,5 +1,5 @@
 import React, { Suspense, useState } from 'react';
-import './MusicTrivia.css';
+import styles from './MusicTrivia.module.css';
 import { TriviaView } from './TriviaView';
 import { TriviaContent } from './TriviaContent';
 
@@ -15,12 +15,12 @@ export function TriviaErrorBoundary({ children, onReset }: Props) {
     <ErrorBoundary
       FallbackComponent={({ error, resetErrorBoundary }: FallbackProps) => {
         return (
-          <div className="trivia-error">
+          <div className={styles['trivia-error']}>
             <p>
               Could not load trivia: {(error as { message: string }).message}
             </p>
             <button
-              className="trivia-btn"
+              className={styles['trivia-btn']}
               onClick={() => {
                 resetErrorBoundary();
               }}
@@ -45,7 +45,7 @@ export const MusicTrivia: React.FC = () => {
   };
 
   return (
-    <div className="trivia-panel">
+    <div className={styles['trivia-panel']}>
       <h3>Music Trivia</h3>
       <TriviaErrorBoundary onReset={handleReset}>
         <Suspense

@@ -4,7 +4,7 @@ import { PlaybackControls } from './PlaybackControls';
 import { SongList } from './SongList';
 import { SheetMusicComposerProvider } from './SheetMusicComposerProvider';
 import { useSheetMusicComposer } from './useSheetMusicComposer';
-import './SheetMusicComposer.css';
+import styles from './SheetMusicComposer.module.css';
 
 function SheetMusicComposerContent() {
   const {
@@ -18,8 +18,8 @@ function SheetMusicComposerContent() {
   } = useSheetMusicComposer();
 
   return (
-    <div className="main-content">
-      <div className="staff-section" style={{ maxWidth: '100%' }}>
+    <div className={styles['main-content']}>
+      <div className={styles['staff-section']} style={{ maxWidth: '100%' }}>
         {rowsStaff.length > 0 &&
           rowsStaff.map((row, index) => (
             <div
@@ -27,7 +27,7 @@ function SheetMusicComposerContent() {
               onClick={
                 index === rowsStaff.length - 1 ? handleStaffClick : undefined
               }
-              className="staff-row"
+              className={styles['staff-row']}
             >
               <Staff
                 key={row.position}
@@ -42,7 +42,7 @@ function SheetMusicComposerContent() {
             </div>
           ))}
         {rowsStaff.length === 0 && (
-          <div className="single-staff" style={{ maxWidth: '100%' }}>
+          <div style={{ maxWidth: '100%' }}>
             <Staff
               music={music}
               activeNoteId={activeNoteId}
@@ -53,7 +53,7 @@ function SheetMusicComposerContent() {
           </div>
         )}
       </div>
-      <div className="palette-and-saved-songs">
+      <div className={styles['palette-and-saved-songs']}>
         <Palette />
         <SongList />
       </div>

@@ -1,42 +1,41 @@
 import { Outlet, Link, useRouterState } from '@tanstack/react-router';
 import { useTriviaStore } from '#shared/stores/useTriviaStore';
-import '../SheetMusicComposer/SheetMusicComposer.css';
-import './AppLayout.css';
+import styles from './AppLayout.module.css';
 
 function AppLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { score, total, reset } = useTriviaStore();
 
   return (
-    <div className="app">
-      <header className="app-header">
+    <div className={styles.app}>
+      <header className={styles['app-header']}>
         <h1>Sheet Music Composer</h1>
-        <p className="subtitle">
+        <p className={styles.subtitle}>
           Create and play back sheet music in Western Notation
         </p>
-        <nav className="app-nav">
+        <nav className={styles['app-nav']}>
           <Link
             to="/"
-            className="nav-link"
+            className={styles['nav-link']}
             data-status={pathname === '/' ? 'active' : undefined}
           >
             Composer
           </Link>
           <Link
             to="/songs"
-            className="nav-link"
+            className={styles['nav-link']}
             data-status={pathname === '/songs' ? 'active' : undefined}
           >
             Saved Songs
           </Link>
-          <div className="nav-trivia-score">
-            <span className="trivia-score-label">🎵 Trivia</span>
-            <span className="trivia-score-value">
+          <div className={styles['nav-trivia-score']}>
+            <span className={styles['trivia-score-label']}>🎵 Trivia</span>
+            <span className={styles['trivia-score-value']}>
               {score}/{total}
             </span>
             {total > 0 && (
               <button
-                className="trivia-reset-btn"
+                className={styles['trivia-reset-btn']}
                 onClick={reset}
                 title="Reset score"
               >
@@ -46,7 +45,7 @@ function AppLayout() {
           </div>
         </nav>
       </header>
-      <main className="app-main">
+      <main className={styles['app-main']}>
         <Outlet />
       </main>
     </div>

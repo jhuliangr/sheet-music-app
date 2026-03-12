@@ -8,7 +8,7 @@ import type { Song, Note, Chord } from '#shared/types';
 import { DURATION_BEATS } from '#shared/constants';
 import { usePlayback, useStaffLayout } from '#shared/index';
 import { useSongsStore } from '#shared/stores/useSongsStore';
-import './Songs.css';
+import styles from './Songs.module.css';
 
 export const Songs: React.FC = () => {
   const navigate = useNavigate();
@@ -72,39 +72,47 @@ export const Songs: React.FC = () => {
   }, [animationRef]);
 
   return (
-    <div className="songs-page">
-      <div className="songs-page-header">
-        <button className="back-btn" onClick={() => navigate({ to: '/' })}>
+    <div className={styles['songs-page']}>
+      <div className={styles['songs-page-header']}>
+        <button
+          className={styles['back-btn']}
+          onClick={() => navigate({ to: '/' })}
+        >
           ← Back to Composer
         </button>
         <h2>Saved Songs</h2>
       </div>
 
-      <div className="songs-page-content">
-        <div className="songs-list-section">
+      <div className={styles['songs-page-content']}>
+        <div className={styles['songs-list-section']}>
           {songs.length === 0 ? (
-            <p className="no-songs">No saved songs</p>
+            <p className={styles['no-songs']}>No saved songs</p>
           ) : (
             songs.map((song) => (
               <div
                 key={song.id}
-                className={`song-item ${selectedSong?.id === song.id ? 'selected' : ''}`}
+                className={[
+                  styles['song-item'],
+                  selectedSong?.id === song.id ? styles.selected : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
               >
-                <div className="song-info">
-                  <span className="song-name">{song.name}</span>
-                  <span className="song-details">
+                <div className={styles['song-info']}>
+                  <span className={styles['song-name']}>{song.name}</span>
+                  <span className={styles['song-details']}>
                     {song.notesAndChords.length} notes - {song.tempo} BPM
                   </span>
                 </div>
-                <div className="song-actions">
+                <div className={styles['song-actions']}>
                   <button
-                    className="load-btn"
+                    className={styles['load-btn']}
                     onClick={() => handleLoadSong(song)}
                   >
                     Load to Staff
                   </button>
                   <button
-                    className="delete-btn"
+                    className={styles['delete-btn']}
                     onClick={() => handleDeleteSong(song.id)}
                   >
                     ✕
@@ -116,11 +124,11 @@ export const Songs: React.FC = () => {
           <MusicTrivia />
         </div>
 
-        <div className="staff-preview-section">
+        <div className={styles['staff-preview-section']}>
           {selectedSong ? (
             <>
               <h3>Preview: {selectedSong.name}</h3>
-              <div className="staff-section">
+              <div className={styles['staff-section']}>
                 {rowsStaff.length > 0 &&
                   rowsStaff.map((row) => (
                     <Staff
@@ -160,7 +168,7 @@ export const Songs: React.FC = () => {
               </PlaybackProvider>
             </>
           ) : (
-            <p className="no-selection">Select a song to preview</p>
+            <p className={styles['no-selection']}>Select a song to preview</p>
           )}
         </div>
       </div>

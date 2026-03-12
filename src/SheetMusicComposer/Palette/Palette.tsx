@@ -1,5 +1,5 @@
 import React from 'react';
-import './Palette.css';
+import styles from './Palette.module.css';
 import { CHORD_QUALITIES, DURATIONS, NOTE_NAMES } from '#shared/constants';
 import { Button } from '@radix-ui/themes';
 import { useSheetMusicComposer } from '../useSheetMusicComposer';
@@ -24,14 +24,14 @@ export const Palette: React.FC = () => {
   } = useSheetMusicComposer();
 
   return (
-    <div className="note-palette">
-      <div className="palette-section">
-        <div className="flex">
+    <div className={styles['note-palette']}>
+      <div className={styles['palette-section']}>
+        <div className={styles.flex}>
           <h3>Note</h3>
-          <div className="flex">
+          <div className={styles.flex}>
             <h3>Octave: {selectedNoteOctave}</h3>
             <Button
-              className="less-y-padding"
+              className={styles['less-y-padding']}
               onClick={() =>
                 setSelectedNoteOctave((prev) => {
                   if (prev <= 3) return prev;
@@ -44,7 +44,7 @@ export const Palette: React.FC = () => {
               -
             </Button>
             <Button
-              className="less-y-padding"
+              className={styles['less-y-padding']}
               onClick={() =>
                 setSelectedNoteOctave((prev) => {
                   if (prev >= 5) return prev;
@@ -58,11 +58,16 @@ export const Palette: React.FC = () => {
             </Button>
           </div>
         </div>
-        <div className="palette-buttons">
+        <div className={styles['palette-buttons']}>
           {NOTE_NAMES.map((note) => (
             <Button
               key={note}
-              className={`palette-btn ${selectedNote === note && !isRest ? 'active' : ''}`}
+              className={[
+                styles['palette-btn'],
+                selectedNote === note && !isRest ? styles.active : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
               onClick={() => handleNoteSelect(note)}
             >
               {note}
@@ -70,24 +75,34 @@ export const Palette: React.FC = () => {
           ))}
         </div>
       </div>
-      <div className="palette-section">
+      <div className={styles['palette-section']}>
         <h3>Chord</h3>
-        <div className="palette-buttons">
+        <div className={styles['palette-buttons']}>
           {NOTE_NAMES.map((note) => (
             <Button
               key={note}
-              className={`palette-btn ${selectedChord === note && !isRest ? 'active' : ''}`}
+              className={[
+                styles['palette-btn'],
+                selectedChord === note && !isRest ? styles.active : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
               onClick={() => handleChordSelect(note)}
             >
               {note}
             </Button>
           ))}
         </div>
-        <div className="palette-buttons" style={{ marginTop: '8px' }}>
+        <div className={styles['palette-buttons']} style={{ marginTop: '8px' }}>
           {CHORD_QUALITIES.map((quality) => (
             <Button
               key={quality}
-              className={`palette-btn ${selectedChordQuality === quality ? 'active' : ''}`}
+              className={[
+                styles['palette-btn'],
+                selectedChordQuality === quality ? styles.active : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
               onClick={() => setSelectedChordQuality(quality)}
             >
               {quality}
@@ -96,13 +111,18 @@ export const Palette: React.FC = () => {
         </div>
       </div>
 
-      <div className="palette-section">
+      <div className={styles['palette-section']}>
         <h3>Duration</h3>
-        <div className="palette-buttons">
+        <div className={styles['palette-buttons']}>
           {DURATIONS.map((duration) => (
             <Button
               key={duration}
-              className={`palette-btn ${selectedDuration === duration ? 'active' : ''}`}
+              className={[
+                styles['palette-btn'],
+                selectedDuration === duration ? styles.active : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
               onClick={() => setSelectedDuration(duration)}
             >
               {duration === 'whole' && '1'}
@@ -114,23 +134,38 @@ export const Palette: React.FC = () => {
         </div>
       </div>
 
-      <div className="palette-section">
+      <div className={styles['palette-section']}>
         <h3>Accidental</h3>
-        <div className="palette-buttons">
+        <div className={styles['palette-buttons']}>
           <Button
-            className={`palette-btn ${selectedAccidental === '' ? 'active' : ''}`}
+            className={[
+              styles['palette-btn'],
+              selectedAccidental === '' ? styles.active : '',
+            ]
+              .filter(Boolean)
+              .join(' ')}
             onClick={() => setSelectedAccidental('')}
           >
             Natural (♮)
           </Button>
           <Button
-            className={`palette-btn ${selectedAccidental === '#' ? 'active' : ''}`}
+            className={[
+              styles['palette-btn'],
+              selectedAccidental === '#' ? styles.active : '',
+            ]
+              .filter(Boolean)
+              .join(' ')}
             onClick={() => setSelectedAccidental('#')}
           >
             ♯
           </Button>
           <Button
-            className={`palette-btn ${selectedAccidental === 'b' ? 'active' : ''}`}
+            className={[
+              styles['palette-btn'],
+              selectedAccidental === 'b' ? styles.active : '',
+            ]
+              .filter(Boolean)
+              .join(' ')}
             onClick={() => setSelectedAccidental('b')}
           >
             ♭
@@ -138,11 +173,13 @@ export const Palette: React.FC = () => {
         </div>
       </div>
 
-      <div className="palette-section">
+      <div className={styles['palette-section']}>
         <h3>Rest</h3>
-        <div className="palette-buttons">
+        <div className={styles['palette-buttons']}>
           <Button
-            className={`palette-btn ${isRest ? 'active' : ''}`}
+            className={[styles['palette-btn'], isRest ? styles.active : '']
+              .filter(Boolean)
+              .join(' ')}
             onClick={() => setIsRest(!isRest)}
           >
             Rest
@@ -150,9 +187,12 @@ export const Palette: React.FC = () => {
         </div>
       </div>
 
-      <div className="palette-section">
+      <div className={styles['palette-section']}>
         <h3>Controls</h3>
-        <Button className="palette-btn clear-btn" onClick={handleClear}>
+        <Button
+          className={`${styles['palette-btn']} ${styles['clear-btn']}`}
+          onClick={handleClear}
+        >
           Clear
         </Button>
       </div>
