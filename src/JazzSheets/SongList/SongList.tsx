@@ -1,20 +1,13 @@
 import React, { useState } from 'react';
-import type { Song, Note, Chord } from '#shared/types';
+import type { Song } from '#shared/types';
 import './SongList.css';
-
-interface SongListProps {
-  currentNotes: (Note | Chord)[];
-  currentTempo: number;
-  onLoadSong: (song: Song) => void;
-}
+import { useJazzSheets } from '../useJazzSheets';
 
 const STORAGE_KEY = 'sheet-music-songs';
 
-export const SongList: React.FC<SongListProps> = ({
-  currentNotes,
-  currentTempo,
-  onLoadSong,
-}) => {
+export const SongList: React.FC = () => {
+  const { music, tempo, handleLoadSong } = useJazzSheets();
+
   const [songs, setSongs] = useState<Song[]>(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return [];
@@ -42,7 +35,7 @@ export const SongList: React.FC<SongListProps> = ({
       return;
     }
 
-    if (currentNotes.length === 0) {
+    if (music.length === 0) {
       setError('No notes to save');
       return;
     }
@@ -50,8 +43,8 @@ export const SongList: React.FC<SongListProps> = ({
     const newSong: Song = {
       id: Math.random().toString(36).substring(2, 9),
       name: songName.trim(),
-      notesAndChords: currentNotes,
-      tempo: currentTempo,
+      notesAndChords: music,
+      tempo,
     };
 
     const updatedSongs = [...songs, newSong];
@@ -107,7 +100,10 @@ export const SongList: React.FC<SongListProps> = ({
                 {song.notesAndChords.length} notes - {song.tempo} BPM
               </span>
               <div className="song-actions">
-                <button className="load-btn" onClick={() => onLoadSong(song)}>
+                <button
+                  className="load-btn"
+                  onClick={() => handleLoadSong(song)}
+                >
                   Load
                 </button>
                 <button

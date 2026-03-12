@@ -1,80 +1,96 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PlaybackControls } from './PlaybackControls';
+import { usePlaybackContext } from '../usePlaybackContext';
+
+vi.mock('../usePlaybackContext');
+
+const handlePlay = vi.fn();
+const handlePause = vi.fn();
+const handleStop = vi.fn();
+const handleTempoChange = vi.fn();
+
+const defaultContextValue = {
+  isPlaying: false,
+  tempo: 120,
+  handlePlay,
+  handlePause,
+  handleStop,
+  handleTempoChange,
+};
 
 describe('JazzSheets/PlaybackControls/PlaybackControls', () => {
-  const defaultProps = {
-    isPlaying: false,
-    tempo: 120,
-    onPlay: vi.fn(),
-    onPause: vi.fn(),
-    onStop: vi.fn(),
-    onTempoChange: vi.fn(),
-  };
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(usePlaybackContext).mockReturnValue(
+      defaultContextValue as unknown as ReturnType<typeof usePlaybackContext>,
+    );
+  });
+
   it('works', () => {
-    render(<PlaybackControls {...defaultProps} />);
+    render(<PlaybackControls />);
   });
 
   it('renders play button when not playing', () => {
-    render(<PlaybackControls {...defaultProps} />);
+    render(<PlaybackControls />);
     expect(screen.getByText('▶ Play')).toBeInTheDocument();
   });
 
   it('renders pause button when playing', () => {
-    render(<PlaybackControls {...defaultProps} isPlaying={true} />);
+    vi.mocked(usePlaybackContext).mockReturnValue({
+      ...defaultContextValue,
+      isPlaying: true,
+    } as unknown as ReturnType<typeof usePlaybackContext>);
+    render(<PlaybackControls />);
     expect(screen.getByText('⏸ Pause')).toBeInTheDocument();
   });
 
   it('renders stop button', () => {
-    render(<PlaybackControls {...defaultProps} />);
+    render(<PlaybackControls />);
     expect(screen.getByText('⏹ Stop')).toBeInTheDocument();
   });
 
   it('displays current tempo', () => {
-    render(<PlaybackControls {...defaultProps} tempo={100} />);
-    expect(screen.getByText('Tempo: 100 BPM')).toBeInTheDocument();
+    render(<PlaybackControls />);
+    expect(screen.getByText('Tempo: 120 BPM')).toBeInTheDocument();
   });
 
   it('has tempo slider', () => {
-    render(<PlaybackControls {...defaultProps} />);
+    render(<PlaybackControls />);
     const slider = screen.getByLabelText(/tempo/i);
     expect(slider).toHaveValue('120');
   });
 
   it('calls onPlay when play button is clicked', async () => {
     const user = userEvent.setup();
-    render(<PlaybackControls {...defaultProps} />);
-
+    render(<PlaybackControls />);
     await user.click(screen.getByText('▶ Play'));
-
-    expect(defaultProps.onPlay).toHaveBeenCalledTimes(1);
+    expect(handlePlay).toHaveBeenCalledTimes(1);
   });
 
   it('calls onPause when pause button is clicked', async () => {
+    vi.mocked(usePlaybackContext).mockReturnValue({
+      ...defaultContextValue,
+      isPlaying: true,
+    } as unknown as ReturnType<typeof usePlaybackContext>);
     const user = userEvent.setup();
-    render(<PlaybackControls {...defaultProps} isPlaying={true} />);
-
+    render(<PlaybackControls />);
     await user.click(screen.getByText('⏸ Pause'));
-
-    expect(defaultProps.onPause).toHaveBeenCalledTimes(1);
+    expect(handlePause).toHaveBeenCalledTimes(1);
   });
 
   it('calls onStop when stop button is clicked', async () => {
     const user = userEvent.setup();
-    render(<PlaybackControls {...defaultProps} />);
-
+    render(<PlaybackControls />);
     await user.click(screen.getByText('⏹ Stop'));
-
-    expect(defaultProps.onStop).toHaveBeenCalledTimes(1);
+    expect(handleStop).toHaveBeenCalledTimes(1);
   });
 
   it('calls onTempoChange when slider is changed', () => {
-    render(<PlaybackControls {...defaultProps} />);
-
+    render(<PlaybackControls />);
     const slider = screen.getByLabelText(/tempo/i);
     fireEvent.change(slider, { target: { value: '150' } });
-
-    expect(defaultProps.onTempoChange).toHaveBeenCalled();
+    expect(handleTempoChange).toHaveBeenCalled();
   });
 });

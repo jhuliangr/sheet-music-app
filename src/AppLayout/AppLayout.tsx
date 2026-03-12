@@ -1,8 +1,11 @@
 import { Outlet, Link, useRouterState } from '@tanstack/react-router';
+import { useTriviaStore } from '#shared/stores/useTriviaStore';
 import '../JazzSheets/JazzSheets.css';
+import './AppLayout.css'
 
 function AppLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { score, total, reset } = useTriviaStore();
 
   return (
     <div className="app">
@@ -26,6 +29,21 @@ function AppLayout() {
           >
             Saved Songs
           </Link>
+          <div className="nav-trivia-score">
+            <span className="trivia-score-label">🎵 Trivia</span>
+            <span className="trivia-score-value">
+              {score}/{total}
+            </span>
+            {total > 0 && (
+              <button
+                className="trivia-reset-btn"
+                onClick={reset}
+                title="Reset score"
+              >
+                ↺
+              </button>
+            )}
+          </div>
         </nav>
       </header>
       <main className="app-main">

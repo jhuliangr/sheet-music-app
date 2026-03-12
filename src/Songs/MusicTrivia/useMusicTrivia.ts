@@ -1,4 +1,4 @@
-import useAsync from '#shared/useAsync';
+import { useAsync } from '#shared/index';
 import { get } from './api';
 import type { TriviaQuestion, TriviaResponse } from './types';
 

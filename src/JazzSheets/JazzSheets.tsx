@@ -1,69 +1,22 @@
-import { useMemo } from 'react';
 import { Staff } from './Staff';
 import { Palette } from './Palette';
 import { PlaybackControls } from './PlaybackControls';
 import { SongList } from './SongList';
-import { useSongs } from '#shared/useSongs';
-import { DURATION_BEATS } from '#shared/constants';
-import type { NoteName } from '#shared/types';
+import { JazzSheetsProvider } from './JazzSheetsProvider';
+import { useJazzSheets } from './useJazzSheets';
 import './JazzSheets.css';
 
-export function JazzSheets() {
+function JazzSheetsContent() {
   const {
     music,
-    selectedNote,
-    selectedNoteOctave,
-    selectedChord,
-    selectedDuration,
-    selectedAccidental,
-    isRest,
-    tempo,
+    activeNoteId,
     isPlaying,
-    currentPosition,
     rowsStaff,
     handleNoteClick,
     handleDeletion,
     handleStaffClick,
-    handlePlay,
-    handlePause,
-    handleStop,
-    handleTempoChange,
-    handleLoadSong,
-    handleClear,
     handleMaximumWidthChange,
-    setIsRest,
-    setSelectedNote,
-    setSelectedChord,
-    setSelectedDuration,
-    setSelectedAccidental,
-    setSelectedNoteOctave,
-    selectedChordQuality,
-    setSelectedChordQuality,
-  } = useSongs();
-
-  const activeNoteId = useMemo(() => {
-    let accumulated = 0;
-    for (const note of music) {
-      const noteDuration = DURATION_BEATS[note.duration];
-      if (
-        currentPosition >= accumulated &&
-        currentPosition < accumulated + noteDuration
-      ) {
-        return note.id;
-      }
-      accumulated += noteDuration;
-    }
-    return null;
-  }, [currentPosition, music]);
-
-  const handleNoteSelect = (note: NoteName) => {
-    setSelectedNote(note);
-    setSelectedChord(null);
-  };
-  const handleChordSelect = (chord: NoteName) => {
-    setSelectedChord(chord);
-    setSelectedNote(null);
-  };
+  } = useJazzSheets();
 
   return (
     <div className="main-content">
@@ -106,38 +59,18 @@ export function JazzSheets() {
         )}
       </div>
       <div className="palette-and-saved-songs">
-        <Palette
-          selectedNote={selectedNote}
-          selectedChord={selectedChord}
-          selectedChordQuality={selectedChordQuality}
-          selectedDuration={selectedDuration}
-          selectedAccidental={selectedAccidental}
-          isRest={isRest}
-          selectedNoteOctave={selectedNoteOctave}
-          setSelectedNoteOctave={setSelectedNoteOctave}
-          onNoteSelect={handleNoteSelect}
-          onChordSelect={handleChordSelect}
-          onChordQualitySelect={setSelectedChordQuality}
-          onDurationSelect={setSelectedDuration}
-          onAccidentalToggle={setSelectedAccidental}
-          onRestToggle={() => setIsRest(!isRest)}
-          onClear={handleClear}
-        />
-        <SongList
-          currentNotes={music}
-          currentTempo={tempo}
-          onLoadSong={handleLoadSong}
-        />
+        <Palette />
+        <SongList />
       </div>
-
-      <PlaybackControls
-        isPlaying={isPlaying}
-        tempo={tempo}
-        onPlay={handlePlay}
-        onPause={handlePause}
-        onStop={handleStop}
-        onTempoChange={handleTempoChange}
-      />
+      <PlaybackControls />
     </div>
+  );
+}
+
+export function JazzSheets() {
+  return (
+    <JazzSheetsProvider>
+      <JazzSheetsContent />
+    </JazzSheetsProvider>
   );
 }

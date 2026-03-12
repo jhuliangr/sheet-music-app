@@ -2,10 +2,11 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { Staff } from '../JazzSheets/Staff';
 import { PlaybackControls } from '../JazzSheets/PlaybackControls';
+import { PlaybackProvider } from '../JazzSheets/PlaybackProvider';
 import { MusicTrivia } from './MusicTrivia';
 import type { Song, Note, Chord } from '#shared/types';
 import { DURATION_BEATS, NOTE_WIDTH, STAFF_PADDING } from '#shared/constants';
-import { usePlayback } from '#shared/usePlayback';
+import { usePlayback } from '#shared/index';
 import './Songs.css';
 
 const STORAGE_KEY = 'sheet-music-songs';
@@ -40,9 +41,9 @@ export const Songs: React.FC = () => {
   const lastWidthRef = useRef(0);
 
   const {
+    handleStop,
     handlePlay,
     handlePause,
-    handleStop,
     handleTempoChange,
     isPlaying,
     tempo,
@@ -221,14 +222,18 @@ export const Songs: React.FC = () => {
                   />
                 )}
               </div>
-              <PlaybackControls
-                isPlaying={isPlaying}
-                tempo={tempo}
-                onPlay={handlePlay}
-                onPause={handlePause}
-                onStop={handleStop}
-                onTempoChange={handleTempoChange}
-              />
+              <PlaybackProvider
+                value={{
+                  isPlaying,
+                  tempo,
+                  handlePlay,
+                  handlePause,
+                  handleStop,
+                  handleTempoChange,
+                }}
+              >
+                <PlaybackControls />
+              </PlaybackProvider>
             </>
           ) : (
             <p className="no-selection">Select a song to preview</p>

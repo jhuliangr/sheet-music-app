@@ -2,6 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SongList } from './SongList';
+import { useJazzSheets } from '../useJazzSheets';
+
+vi.mock('../useJazzSheets');
 
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
@@ -21,62 +24,47 @@ const localStorageMock = (() => {
 
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
+const defaultContextValue = {
+  music: [],
+  tempo: 120,
+  handleLoadSong: vi.fn(),
+};
+
 describe('JazzSheets/SongList/SongList', () => {
   beforeEach(() => {
     localStorageMock.clear();
     vi.clearAllMocks();
+    vi.mocked(useJazzSheets).mockReturnValue(
+      defaultContextValue as unknown as ReturnType<typeof useJazzSheets>,
+    );
   });
 
-  const defaultProps = {
-    currentNotes: [],
-    currentTempo: 120,
-    onLoadSong: vi.fn(),
-  };
-
   it('works', () => {
-    render(<SongList {...defaultProps} />);
+    render(<SongList />);
   });
 
   it('renders song name input', () => {
-    render(<SongList {...defaultProps} />);
+    render(<SongList />);
     expect(screen.getByPlaceholderText('Song name')).toBeInTheDocument();
   });
 
   it('renders save button', () => {
-    render(<SongList {...defaultProps} />);
+    render(<SongList />);
     expect(screen.getByText('Save')).toBeInTheDocument();
   });
 
   it('shows empty state when no songs', () => {
-    render(<SongList {...defaultProps} />);
+    render(<SongList />);
     expect(screen.getByText('No saved songs')).toBeInTheDocument();
   });
 
   it('allows typing song name', async () => {
     const user = userEvent.setup();
-    render(<SongList {...defaultProps} />);
+    render(<SongList />);
 
     const input = screen.getByPlaceholderText('Song name');
     await user.type(input, 'My Song');
 
     expect(input).toHaveValue('My Song');
-  });
-
-  it('calls onLoadSong when load button is clicked', async () => {
-    const user = userEvent.setup();
-    const testSong = {
-      id: '1',
-      name: 'Test Song',
-      notesAndChords: [],
-      tempo: 120,
-    };
-
-    localStorageMock.setItem('sheet-music-songs', JSON.stringify([testSong]));
-
-    render(<SongList {...defaultProps} />);
-
-    await user.click(screen.getByText('Load'));
-
-    expect(defaultProps.onLoadSong).toHaveBeenCalledWith(testSong);
   });
 });

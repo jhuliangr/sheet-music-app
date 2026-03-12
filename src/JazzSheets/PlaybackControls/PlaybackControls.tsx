@@ -1,36 +1,30 @@
 import React from 'react';
 import './PlaybackControls.css';
+import { usePlaybackContext } from '../usePlaybackContext';
 
-interface PlaybackControlsProps {
-  isPlaying: boolean;
-  tempo: number;
-  onPlay: () => void;
-  onPause: () => void;
-  onStop: () => void;
-  onTempoChange: (tempo: number) => void;
-}
+export const PlaybackControls: React.FC = () => {
+  const {
+    isPlaying,
+    tempo,
+    handlePlay,
+    handlePause,
+    handleStop,
+    handleTempoChange,
+  } = usePlaybackContext();
 
-export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
-  isPlaying,
-  tempo,
-  onPlay,
-  onPause,
-  onStop,
-  onTempoChange,
-}) => {
   return (
     <div className="playback-controls">
       <div className="transport-controls">
         {!isPlaying ? (
-          <button className="control-btn play-btn" onClick={onPlay}>
+          <button className="control-btn play-btn" onClick={handlePlay}>
             ▶ Play
           </button>
         ) : (
-          <button className="control-btn pause-btn" onClick={onPause}>
+          <button className="control-btn pause-btn" onClick={handlePause}>
             ⏸ Pause
           </button>
         )}
-        <button className="control-btn stop-btn" onClick={onStop}>
+        <button className="control-btn stop-btn" onClick={handleStop}>
           ⏹ Stop
         </button>
       </div>
@@ -43,7 +37,7 @@ export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
           min="40"
           max="200"
           value={tempo}
-          onChange={(e) => onTempoChange(Number(e.target.value))}
+          onChange={(e) => handleTempoChange(Number(e.target.value))}
           className="tempo-slider"
         />
       </div>

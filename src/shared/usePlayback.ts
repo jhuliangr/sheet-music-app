@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   DURATION_BEATS,
   CHORD_INTERVALS,
@@ -10,24 +10,27 @@ import { type Note, type Chord, type ChordQuality } from '#shared/types';
 import * as Tone from 'tone';
 
 export const usePlayback = (music: (Note | Chord)[]) => {
-  const pianoSampler = new Tone.Sampler({
-    urls: {
-      C4: 'C4.mp3',
-      'D#4': 'Ds4.mp3',
-      'F#4': 'Fs4.mp3',
-      A4: 'A4.mp3',
-    },
-    baseUrl: 'https://tonejs.github.io/audio/salamander/',
-    release: 1,
-  }).toDestination();
+  const pianoSamplerRef = useRef<Tone.Sampler | null>(null);
 
-  const noteNameToTone = (
-    note: string,
-    octave: number,
-    accidental: string,
-  ): string => {
-    return `${note}${accidental}${octave}`;
-  };
+  useEffect(() => {
+    pianoSamplerRef.current = new Tone.Sampler({
+      urls: {
+        C4: 'C4.mp3',
+        'D#4': 'Ds4.mp3',
+        'F#4': 'Fs4.mp3',
+        A4: 'A4.mp3',
+      },
+      baseUrl: 'https://tonejs.github.io/audio/salamander/',
+      release: 1,
+    }).toDestination();
+
+    return () => {
+      Tone.getTransport().stop();
+      Tone.getTransport().cancel();
+      pianoSamplerRef.current?.dispose();
+      pianoSamplerRef.current = null;
+    };
+  }, []);
 
   const getTotalBeats = useCallback(() => {
     return music.reduce(
@@ -44,15 +47,28 @@ export const usePlayback = (music: (Note | Chord)[]) => {
   const lastTimeRef = useRef<number>(0);
   const positionRef = useRef<number>(0);
 
+  const stopTransportAndSampler = useCallback(() => {
+    const transport = Tone.getTransport();
+    transport.stop();
+    transport.cancel();
+    // Disconnect then reconnect to immediately silence any still-active voices
+    if (pianoSamplerRef.current) {
+      pianoSamplerRef.current.disconnect();
+      pianoSamplerRef.current.toDestination();
+    }
+  }, []);
+
   const handlePlay = useCallback(async () => {
     if (music.length === 0) return;
+    const sampler = pianoSamplerRef.current;
+    if (!sampler) return;
 
     await Tone.start();
-    Tone.getTransport().bpm.value = tempo;
 
-    setIsPlaying(true);
-    positionRef.current = currentPosition;
-    lastTimeRef.current = performance.now();
+    const transport = Tone.getTransport();
+    transport.stop();
+    transport.cancel();
+    transport.bpm.value = tempo;
 
     const getChordNotes = (chord: Chord): string[] => {
       if (!chord.note) return [];
@@ -69,34 +85,44 @@ export const usePlayback = (music: (Note | Chord)[]) => {
       });
     };
 
-    const playNote = (noteItem: Note | Chord, beatPosition: number) => {
-      if ('isRest' in noteItem && noteItem.isRest) return;
-      if (!noteItem.note) return;
-
-      const duration = DURATION_BEATS[noteItem.duration] / (tempo / 60);
-      const time = Tone.getTransport().seconds + beatPosition / (tempo / 60);
-
-      if ('features' in noteItem) {
-        const notes = getChordNotes(noteItem);
-        if (notes.length > 0) {
-          pianoSampler.triggerAttackRelease(notes, duration, time);
-        }
-      } else {
-        const noteString = noteNameToTone(
-          noteItem.note,
-          noteItem.octave,
-          noteItem.accidental,
-        );
-        pianoSampler.triggerAttackRelease(noteString, duration, time);
-      }
-    };
-
+    // Schedule notes starting from the current beat position
     let currentBeat = 0;
     music.forEach((noteItem) => {
-      const beats = DURATION_BEATS[noteItem.duration];
-      playNote(noteItem, currentBeat);
-      currentBeat += beats;
+      const noteDuration = DURATION_BEATS[noteItem.duration];
+
+      if (currentBeat >= positionRef.current) {
+        const scheduleSeconds =
+          (currentBeat - positionRef.current) / (tempo / 60);
+
+        transport.schedule((audioTime) => {
+          if ('isRest' in noteItem && noteItem.isRest) return;
+          if (!noteItem.note) return;
+
+          const duration = noteDuration / (tempo / 60);
+
+          if ('features' in noteItem) {
+            const notes = getChordNotes(noteItem);
+            if (notes.length > 0) {
+              sampler.triggerAttackRelease(notes, duration, audioTime);
+            }
+          } else {
+            sampler.triggerAttackRelease(
+              `${noteItem.note}${noteItem.accidental}${noteItem.octave}`,
+              duration,
+              audioTime,
+            );
+          }
+        }, scheduleSeconds);
+      }
+
+      currentBeat += noteDuration;
     });
+
+    transport.start('+0');
+
+    setIsPlaying(true);
+    positionRef.current = currentPosition;
+    lastTimeRef.current = performance.now();
 
     const animate = (time: number) => {
       const delta = (time - lastTimeRef.current) / 1000;
@@ -107,6 +133,8 @@ export const usePlayback = (music: (Note | Chord)[]) => {
 
       const totalBeats = getTotalBeats();
       if (positionRef.current >= totalBeats) {
+        transport.stop();
+        transport.cancel();
         positionRef.current = 0;
         setCurrentPosition(0);
         setIsPlaying(false);
@@ -118,13 +146,15 @@ export const usePlayback = (music: (Note | Chord)[]) => {
     };
 
     animationRef.current = requestAnimationFrame(animate);
-  }, [music, tempo, currentPosition, getTotalBeats, pianoSampler]);
+  }, [music, tempo, currentPosition, getTotalBeats]);
 
   const handlePause = useCallback(() => {
     setIsPlaying(false);
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
     }
+    Tone.getTransport().stop();
+    Tone.getTransport().cancel();
     setCurrentPosition(positionRef.current);
   }, []);
 
@@ -133,10 +163,10 @@ export const usePlayback = (music: (Note | Chord)[]) => {
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
     }
+    stopTransportAndSampler();
     positionRef.current = 0;
     setCurrentPosition(0);
-    pianoSampler.releaseAll();
-  }, [pianoSampler]);
+  }, [stopTransportAndSampler]);
 
   const handleTempoChange = useCallback((newTempo: number) => {
     setTempo(newTempo);

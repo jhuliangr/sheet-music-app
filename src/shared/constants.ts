@@ -52,7 +52,6 @@ export const ACCIDENTAL_OFFSET: Record<string, number> = {
   b: -1,
 };
 
-// Chromatic scale for MIDI → note name conversion
 export const SEMITONE_TO_NOTE = [
   'C',
   'C#',
