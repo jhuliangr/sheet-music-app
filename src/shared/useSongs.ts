@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import {
   type Note,
@@ -12,21 +12,10 @@ import {
 import { usePlayback } from './usePlayback';
 import { generateId } from './utils';
 import { useStaffLayout } from './useStaffLayout';
-
-const getInitialMusic = (): (Note | Chord)[] => {
-  try {
-    const saved = localStorage.getItem('music');
-    if (saved) {
-      return JSON.parse(saved) as (Note | Chord)[];
-    }
-    return [];
-  } catch {
-    return [];
-  }
-};
+import { useMusicStore } from './stores/useMusicStore';
 
 export const useSongs = () => {
-  const [music, setMusic] = useState<(Note | Chord)[]>(getInitialMusic);
+  const { music, setMusic } = useMusicStore();
   const [selectedNote, setSelectedNote] = useState<NoteName | null>('C');
   const [selectedNoteOctave, setSelectedNoteOctave] = useState<number>(4);
   const [selectedChord, setSelectedChord] = useState<NoteName | null>(null);
@@ -53,11 +42,9 @@ export const useSongs = () => {
 
   const { rowsStaff, handleMaximumWidthChange } = useStaffLayout(music);
 
-  const skipInitialSave = useRef(false);
-
   const handleDeletion = (id: string) => {
-    setMusic((prev) =>
-      prev.filter((n) => n.id !== id).map((n, i) => ({ ...n, position: i })),
+    setMusic(
+      music.filter((n) => n.id !== id).map((n, i) => ({ ...n, position: i })),
     );
   };
 
@@ -90,10 +77,7 @@ export const useSongs = () => {
       };
     }
 
-    const newMusic = [...music, newItem].sort(
-      (a, b) => a.position - b.position,
-    );
-    setMusic(newMusic);
+    setMusic([...music, newItem].sort((a, b) => a.position - b.position));
   };
 
   const handleLoadSong = useCallback(
@@ -102,13 +86,13 @@ export const useSongs = () => {
       setTempo(song.tempo);
       handleStop();
     },
-    [handleStop, setTempo],
+    [handleStop, setMusic, setTempo],
   );
 
   const handleClear = useCallback(() => {
     setMusic([]);
     handleStop();
-  }, [handleStop]);
+  }, [handleStop, setMusic]);
 
   useEffect(() => {
     const ref = animationRef;
@@ -119,14 +103,6 @@ export const useSongs = () => {
       }
     };
   }, [animationRef]);
-
-  useEffect(() => {
-    if (!skipInitialSave.current) {
-      skipInitialSave.current = true;
-      return;
-    }
-    localStorage.setItem('music', JSON.stringify(music));
-  }, [music]);
 
   return {
     music,

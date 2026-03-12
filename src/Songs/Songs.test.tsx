@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { Songs } from './Songs';
+import { useSongsStore } from '#shared/stores/useSongsStore';
 
 vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => vi.fn(),
@@ -32,22 +33,20 @@ vi.mock('./MusicTrivia', () => ({
   MusicTrivia: () => <div data-testid="music-trivia" />,
 }));
 
-const localStorageMock = (() => {
-  let store: Record<string, string> = {};
-  return {
-    getItem: (key: string) => store[key] ?? null,
-    setItem: (key: string, value: string) => {
-      store[key] = value;
-    },
-    clear: () => {
-      store = {};
-    },
-  };
-})();
-Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+vi.mock('#shared/stores/useSongsStore', () => ({
+  useSongsStore: vi.fn(),
+}));
+
+const emptySongsStore = {
+  songs: [],
+  addSong: vi.fn(),
+  deleteSong: vi.fn(),
+};
 
 describe('Songs/Songs', () => {
-  beforeEach(() => localStorageMock.clear());
+  beforeEach(() => {
+    vi.mocked(useSongsStore).mockReturnValue(emptySongsStore);
+  });
 
   it('works', () => {
     render(<Songs />);
@@ -63,13 +62,12 @@ describe('Songs/Songs', () => {
     expect(screen.getByText('No saved songs')).toBeInTheDocument();
   });
 
-  it('lists saved songs from localStorage', () => {
-    localStorageMock.setItem(
-      'sheet-music-songs',
-      JSON.stringify([
-        { id: '1', name: 'My Song', tempo: 120, notesAndChords: [] },
-      ]),
-    );
+  it('lists saved songs from store', () => {
+    vi.mocked(useSongsStore).mockReturnValue({
+      songs: [{ id: '1', name: 'My Song', tempo: 120, notesAndChords: [] }],
+      addSong: vi.fn(),
+      deleteSong: vi.fn(),
+    });
     render(<Songs />);
     expect(screen.getByText('My Song')).toBeInTheDocument();
   });

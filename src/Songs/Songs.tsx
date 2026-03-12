@@ -7,33 +7,14 @@ import { MusicTrivia } from './MusicTrivia';
 import type { Song, Note, Chord } from '#shared/types';
 import { DURATION_BEATS } from '#shared/constants';
 import { usePlayback, useStaffLayout } from '#shared/index';
+import { useSongsStore } from '#shared/stores/useSongsStore';
 import './Songs.css';
-
-const STORAGE_KEY = 'sheet-music-songs';
 
 export const Songs: React.FC = () => {
   const navigate = useNavigate();
-  const [songs, setSongs] = useState<Song[]>(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return [];
-    try {
-      return JSON.parse(stored);
-    } catch {
-      return [];
-    }
-  });
+  const { songs, deleteSong } = useSongsStore();
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
   const [music, setMusic] = useState<(Note | Chord)[]>([]);
-  const [error, setError] = useState<string | null>(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return null;
-    try {
-      JSON.parse(stored);
-      return null;
-    } catch {
-      return 'Error loading saved songs';
-    }
-  });
 
   const {
     handleStop,
@@ -75,15 +56,7 @@ export const Songs: React.FC = () => {
   );
 
   const handleDeleteSong = (id: string) => {
-    const updatedSongs = songs.filter((s) => s.id !== id);
-    setSongs(updatedSongs);
-
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSongs));
-    } catch {
-      setError('Error deleting the song');
-    }
-
+    deleteSong(id);
     if (selectedSong?.id === id) {
       setSelectedSong(null);
       setMusic([]);
@@ -109,7 +82,6 @@ export const Songs: React.FC = () => {
 
       <div className="songs-page-content">
         <div className="songs-list-section">
-          {error && <p className="error-msg">{error}</p>}
           {songs.length === 0 ? (
             <p className="no-songs">No saved songs</p>
           ) : (

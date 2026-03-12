@@ -3,26 +3,12 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SongList } from './SongList';
 import { useSheetMusicComposer } from '../useSheetMusicComposer';
+import { useSongsStore } from '#shared/stores/useSongsStore';
 
 vi.mock('../useSheetMusicComposer');
-
-const localStorageMock = (() => {
-  let store: Record<string, string> = {};
-  return {
-    getItem: (key: string) => store[key] || null,
-    setItem: (key: string, value: string) => {
-      store[key] = value;
-    },
-    removeItem: (key: string) => {
-      delete store[key];
-    },
-    clear: () => {
-      store = {};
-    },
-  };
-})();
-
-Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+vi.mock('#shared/stores/useSongsStore', () => ({
+  useSongsStore: vi.fn(),
+}));
 
 const defaultContextValue = {
   music: [],
@@ -30,15 +16,21 @@ const defaultContextValue = {
   handleLoadSong: vi.fn(),
 };
 
+const defaultStoreValue = {
+  songs: [],
+  addSong: vi.fn(),
+  deleteSong: vi.fn(),
+};
+
 describe('SheetMusicComposer/SongList/SongList', () => {
   beforeEach(() => {
-    localStorageMock.clear();
     vi.clearAllMocks();
     vi.mocked(useSheetMusicComposer).mockReturnValue(
       defaultContextValue as unknown as ReturnType<
         typeof useSheetMusicComposer
       >,
     );
+    vi.mocked(useSongsStore).mockReturnValue(defaultStoreValue);
   });
 
   it('works', () => {

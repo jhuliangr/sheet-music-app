@@ -1,33 +1,16 @@
 import React, { useState } from 'react';
 import type { Song } from '#shared/types';
+import { useSongsStore } from '#shared/stores/useSongsStore';
+import { generateId } from '#shared/utils';
 import './SongList.css';
 import { useSheetMusicComposer } from '../useSheetMusicComposer';
 
-const STORAGE_KEY = 'sheet-music-songs';
-
 export const SongList: React.FC = () => {
   const { music, tempo, handleLoadSong } = useSheetMusicComposer();
+  const { songs, addSong, deleteSong } = useSongsStore();
 
-  const [songs, setSongs] = useState<Song[]>(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return [];
-    try {
-      return JSON.parse(stored);
-    } catch {
-      return [];
-    }
-  });
   const [songName, setSongName] = useState('');
-  const [error, setError] = useState<string | null>(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return null;
-    try {
-      JSON.parse(stored);
-      return null;
-    } catch {
-      return 'Error loading saved songs';
-    }
-  });
+  const [error, setError] = useState<string | null>(null);
 
   const saveSong = () => {
     if (!songName.trim()) {
@@ -41,33 +24,15 @@ export const SongList: React.FC = () => {
     }
 
     const newSong: Song = {
-      id: Math.random().toString(36).substring(2, 9),
+      id: generateId(),
       name: songName.trim(),
       notesAndChords: music,
       tempo,
     };
 
-    const updatedSongs = [...songs, newSong];
-    setSongs(updatedSongs);
-
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSongs));
-      setSongName('');
-      setError(null);
-    } catch {
-      setError('Error saving the song');
-    }
-  };
-
-  const deleteSong = (id: string) => {
-    const updatedSongs = songs.filter((s) => s.id !== id);
-    setSongs(updatedSongs);
-
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSongs));
-    } catch {
-      setError('Error deleting the song');
-    }
+    addSong(newSong);
+    setSongName('');
+    setError(null);
   };
 
   return (
