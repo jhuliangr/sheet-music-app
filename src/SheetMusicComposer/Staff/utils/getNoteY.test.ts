@@ -13,7 +13,7 @@ const makeNote = (note: Note['note'], octave = 4): Note => ({
   isRest: false,
 });
 
-describe('JazzSheets/Staff/utils/getNoteY', () => {
+describe('SheetMusicComposer/Staff/utils/getNoteY', () => {
   it('works', () => {
     expect(getNoteY(makeNote('C'))).toBeDefined();
   });

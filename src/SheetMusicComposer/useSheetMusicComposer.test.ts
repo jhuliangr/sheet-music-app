@@ -1,44 +1,44 @@
 import { describe, it, expect } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import React from 'react';
-import { useJazzSheets } from './useJazzSheets';
-import { JazzSheetsContext } from './JazzSheetsContext';
-import type { JazzSheetsContextValue } from './JazzSheetsContext';
+import { useSheetMusicComposer } from './useSheetMusicComposer';
+import { SheetMusicComposerContext } from './SheetMusicComposerContext';
+import type { SheetMusicComposerContextValue } from './SheetMusicComposerContext';
 
 const mockValue = {
   music: [],
   selectedNote: 'C',
   isPlaying: false,
   activeNoteId: null,
-} as unknown as JazzSheetsContextValue;
+} as unknown as SheetMusicComposerContextValue;
 
 const wrapper = ({ children }: { children: React.ReactNode }) =>
   React.createElement(
-    JazzSheetsContext.Provider,
+    SheetMusicComposerContext.Provider,
     { value: mockValue },
     children,
   );
 
-describe('JazzSheets/useJazzSheets', () => {
+describe('SheetMusicComposer/useSheetMusicComposer', () => {
   it('works within a provider', () => {
-    const { result } = renderHook(() => useJazzSheets(), { wrapper });
+    const { result } = renderHook(() => useSheetMusicComposer(), { wrapper });
     expect(result.current).toBeDefined();
   });
 
   it('throws when used outside a provider', () => {
-    expect(() => renderHook(() => useJazzSheets())).toThrow(
-      'useJazzSheets must be used within JazzSheetsProvider',
+    expect(() => renderHook(() => useSheetMusicComposer())).toThrow(
+      'useSheetMusicComposer must be used within SheetMusicComposerProvider',
     );
   });
 
   it('returns the context value', () => {
-    const { result } = renderHook(() => useJazzSheets(), { wrapper });
+    const { result } = renderHook(() => useSheetMusicComposer(), { wrapper });
     expect(result.current.music).toEqual([]);
     expect(result.current.selectedNote).toBe('C');
   });
 
   it('returns activeNoteId from context', () => {
-    const { result } = renderHook(() => useJazzSheets(), { wrapper });
+    const { result } = renderHook(() => useSheetMusicComposer(), { wrapper });
     expect(result.current.activeNoteId).toBeNull();
   });
 });

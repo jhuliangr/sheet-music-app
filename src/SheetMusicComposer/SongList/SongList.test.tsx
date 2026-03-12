@@ -2,9 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SongList } from './SongList';
-import { useJazzSheets } from '../useJazzSheets';
+import { useSheetMusicComposer } from '../useSheetMusicComposer';
 
-vi.mock('../useJazzSheets');
+vi.mock('../useSheetMusicComposer');
 
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
@@ -30,12 +30,14 @@ const defaultContextValue = {
   handleLoadSong: vi.fn(),
 };
 
-describe('JazzSheets/SongList/SongList', () => {
+describe('SheetMusicComposer/SongList/SongList', () => {
   beforeEach(() => {
     localStorageMock.clear();
     vi.clearAllMocks();
-    vi.mocked(useJazzSheets).mockReturnValue(
-      defaultContextValue as unknown as ReturnType<typeof useJazzSheets>,
+    vi.mocked(useSheetMusicComposer).mockReturnValue(
+      defaultContextValue as unknown as ReturnType<
+        typeof useSheetMusicComposer
+      >,
     );
   });
 

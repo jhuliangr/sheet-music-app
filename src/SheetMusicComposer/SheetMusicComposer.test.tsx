@@ -1,15 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { JazzSheets } from './JazzSheets';
-import { useJazzSheets } from './useJazzSheets';
+import { SheetMusicComposer } from './SheetMusicComposer';
+import { useSheetMusicComposer } from './useSheetMusicComposer';
 import { usePlaybackContext } from './usePlaybackContext';
 
-vi.mock('./JazzSheetsProvider', () => ({
-  JazzSheetsProvider: ({ children }: { children: React.ReactNode }) => (
+vi.mock('./SheetMusicComposerProvider', () => ({
+  SheetMusicComposerProvider: ({ children }: { children: React.ReactNode }) => (
     <>{children}</>
   ),
 }));
-vi.mock('./useJazzSheets');
+vi.mock('./useSheetMusicComposer');
 vi.mock('./usePlaybackContext');
 vi.mock('./Staff', () => ({ Staff: () => <div data-testid="staff" /> }));
 vi.mock('./Palette', () => ({ Palette: () => <div data-testid="palette" /> }));
@@ -20,7 +20,7 @@ vi.mock('./PlaybackControls', () => ({
   PlaybackControls: () => <div data-testid="playback-controls" />,
 }));
 
-const defaultJazzSheets = {
+const defaultSheetMusicComposer = {
   music: [],
   activeNoteId: null,
   isPlaying: false,
@@ -40,31 +40,33 @@ const defaultPlayback = {
   handleTempoChange: vi.fn(),
 };
 
-describe('JazzSheets/JazzSheets', () => {
+describe('SheetMusicComposer/SheetMusicComposer', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(useJazzSheets).mockReturnValue(
-      defaultJazzSheets as unknown as ReturnType<typeof useJazzSheets>,
+    vi.mocked(useSheetMusicComposer).mockReturnValue(
+      defaultSheetMusicComposer as unknown as ReturnType<
+        typeof useSheetMusicComposer
+      >,
     );
     vi.mocked(usePlaybackContext).mockReturnValue(defaultPlayback);
   });
 
   it('works', () => {
-    render(<JazzSheets />);
+    render(<SheetMusicComposer />);
   });
 
   it('renders the Palette', () => {
-    render(<JazzSheets />);
+    render(<SheetMusicComposer />);
     expect(screen.getByTestId('palette')).toBeInTheDocument();
   });
 
   it('renders the SongList', () => {
-    render(<JazzSheets />);
+    render(<SheetMusicComposer />);
     expect(screen.getByTestId('song-list')).toBeInTheDocument();
   });
 
   it('renders PlaybackControls', () => {
-    render(<JazzSheets />);
+    render(<SheetMusicComposer />);
     expect(screen.getByTestId('playback-controls')).toBeInTheDocument();
   });
 });

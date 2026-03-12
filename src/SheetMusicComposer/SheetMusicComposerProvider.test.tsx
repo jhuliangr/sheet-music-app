@@ -2,8 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { renderHook } from '@testing-library/react';
 import React from 'react';
-import { JazzSheetsProvider } from './JazzSheetsProvider';
-import { useJazzSheets } from './useJazzSheets';
+import { SheetMusicComposerProvider } from './SheetMusicComposerProvider';
+import { useSheetMusicComposer } from './useSheetMusicComposer';
 
 vi.mock('#shared/useSongs', () => ({
   useSongs: () => ({
@@ -58,34 +58,34 @@ vi.mock('#shared/useSongs', () => ({
 }));
 
 const wrapper = ({ children }: { children: React.ReactNode }) =>
-  React.createElement(JazzSheetsProvider, null, children);
+  React.createElement(SheetMusicComposerProvider, null, children);
 
-describe('JazzSheets/JazzSheetsProvider', () => {
+describe('SheetMusicComposer/SheetMusicComposerProvider', () => {
   it('works', () => {
     render(
-      <JazzSheetsProvider>
+      <SheetMusicComposerProvider>
         <div />
-      </JazzSheetsProvider>,
+      </SheetMusicComposerProvider>,
     );
   });
 
   it('renders its children', () => {
     render(
-      <JazzSheetsProvider>
+      <SheetMusicComposerProvider>
         <span>child</span>
-      </JazzSheetsProvider>,
+      </SheetMusicComposerProvider>,
     );
     expect(screen.getByText('child')).toBeInTheDocument();
   });
 
-  it('provides context accessible via useJazzSheets', () => {
-    const { result } = renderHook(() => useJazzSheets(), { wrapper });
+  it('provides context accessible via useSheetMusicComposer', () => {
+    const { result } = renderHook(() => useSheetMusicComposer(), { wrapper });
     expect(result.current.selectedNote).toBe('C');
     expect(result.current.music).toHaveLength(1);
   });
 
   it('computes activeNoteId for the current position', () => {
-    const { result } = renderHook(() => useJazzSheets(), { wrapper });
+    const { result } = renderHook(() => useSheetMusicComposer(), { wrapper });
     expect(result.current.activeNoteId).toBe('note-1');
   });
 });

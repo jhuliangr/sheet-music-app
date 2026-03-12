@@ -2,7 +2,7 @@ import { describe, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import { Staff } from './Staff';
 
-describe('JazzSheets/Staff/Staff', () => {
+describe('SheetMusicComposer/Staff/Staff', () => {
   const defaultProps = {
     music: [],
     activeNoteId: null,

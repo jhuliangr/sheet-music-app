@@ -11,7 +11,7 @@ import { renderStaffLines } from './renderStaffLines';
 import { renderLedgerLines } from './renderLedgerLines';
 import type { Note } from '#shared/types';
 
-describe('JazzSheets/Staff/utils/constants', () => {
+describe('SheetMusicComposer/Staff/utils/constants', () => {
   it('exports LINE_SPACING correctly', () => {
     expect(LINE_SPACING).toBe(12);
   });
@@ -33,7 +33,7 @@ describe('JazzSheets/Staff/utils/constants', () => {
   });
 });
 
-describe('JazzSheets/Staff/utils/getNoteY', () => {
+describe('SheetMusicComposer/Staff/utils/getNoteY', () => {
   const createNote = (note: Note['note'], octave: number): Note => ({
     id: '1',
     note,
@@ -102,7 +102,7 @@ describe('JazzSheets/Staff/utils/getNoteY', () => {
   });
 });
 
-describe('JazzSheets/Staff/utils/renderStaffLines', () => {
+describe('SheetMusicComposer/Staff/utils/renderStaffLines', () => {
   it('renders 5 staff lines', () => {
     const lines = renderStaffLines();
     expect(lines).toHaveLength(5);
@@ -123,7 +123,7 @@ describe('JazzSheets/Staff/utils/renderStaffLines', () => {
   });
 });
 
-describe('JazzSheets/Staff/utils/renderLedgerLines', () => {
+describe('SheetMusicComposer/Staff/utils/renderLedgerLines', () => {
   it('renders ledger lines for middle C position', () => {
     const y = STAFF_TOP - 10;
     const lines = renderLedgerLines(y);

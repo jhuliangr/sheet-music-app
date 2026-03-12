@@ -3,12 +3,16 @@ import { useSongs } from '#shared/useSongs';
 import { DURATION_BEATS } from '#shared/constants';
 import type { NoteName } from '#shared/types';
 import {
-  JazzSheetsContext,
-  type JazzSheetsContextValue,
-} from './JazzSheetsContext';
+  SheetMusicComposerContext,
+  type SheetMusicComposerContextValue,
+} from './SheetMusicComposerContext';
 import { PlaybackProvider } from './PlaybackProvider';
 
-export function JazzSheetsProvider({ children }: { children: ReactNode }) {
+export function SheetMusicComposerProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const songs = useSongs();
 
   const activeNoteId = useMemo(() => {
@@ -36,7 +40,7 @@ export function JazzSheetsProvider({ children }: { children: ReactNode }) {
     songs.setSelectedNote(null);
   };
 
-  const value: JazzSheetsContextValue = {
+  const value: SheetMusicComposerContextValue = {
     ...songs,
     activeNoteId,
     handleNoteSelect,
@@ -54,9 +58,9 @@ export function JazzSheetsProvider({ children }: { children: ReactNode }) {
 
   return (
     <PlaybackProvider value={playbackValue}>
-      <JazzSheetsContext.Provider value={value}>
+      <SheetMusicComposerContext.Provider value={value}>
         {children}
-      </JazzSheetsContext.Provider>
+      </SheetMusicComposerContext.Provider>
     </PlaybackProvider>
   );
 }

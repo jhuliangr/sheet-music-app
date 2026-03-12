@@ -44,7 +44,3 @@ export interface Song {
   notesAndChords: (Note | Chord)[];
   tempo: number;
 }
-
-export function generateId(): string {
-  return Math.random().toString(36).substring(2, 9);
-}

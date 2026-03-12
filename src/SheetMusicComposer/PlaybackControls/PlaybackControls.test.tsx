@@ -20,7 +20,7 @@ const defaultContextValue = {
   handleTempoChange,
 };
 
-describe('JazzSheets/PlaybackControls/PlaybackControls', () => {
+describe('SheetMusicComposer/PlaybackControls/PlaybackControls', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(usePlaybackContext).mockReturnValue(

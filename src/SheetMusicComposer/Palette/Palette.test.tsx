@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { Palette } from './Palette';
-import { useJazzSheets } from '../useJazzSheets';
+import { useSheetMusicComposer } from '../useSheetMusicComposer';
 
-vi.mock('../useJazzSheets');
+vi.mock('../useSheetMusicComposer');
 
 const defaultContextValue = {
   selectedNote: 'C' as const,
@@ -23,11 +23,13 @@ const defaultContextValue = {
   handleClear: vi.fn(),
 };
 
-describe('JazzSheets/Palette/Palette', () => {
+describe('SheetMusicComposer/Palette/Palette', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(useJazzSheets).mockReturnValue(
-      defaultContextValue as unknown as ReturnType<typeof useJazzSheets>,
+    vi.mocked(useSheetMusicComposer).mockReturnValue(
+      defaultContextValue as unknown as ReturnType<
+        typeof useSheetMusicComposer
+      >,
     );
   });
 
@@ -94,10 +96,10 @@ describe('JazzSheets/Palette/Palette', () => {
   });
 
   it('highlights rest when active', () => {
-    vi.mocked(useJazzSheets).mockReturnValue({
+    vi.mocked(useSheetMusicComposer).mockReturnValue({
       ...defaultContextValue,
       isRest: true,
-    } as unknown as ReturnType<typeof useJazzSheets>);
+    } as unknown as ReturnType<typeof useSheetMusicComposer>);
     render(<Palette />);
     const restButtons = screen.getAllByText('Rest');
     expect(restButtons[restButtons.length - 1]).toHaveClass('active');

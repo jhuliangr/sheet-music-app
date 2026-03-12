@@ -17,7 +17,7 @@ function Consumer() {
   return <div>{tempo}</div>;
 }
 
-describe('JazzSheets/PlaybackProvider', () => {
+describe('SheetMusicComposer/PlaybackProvider', () => {
   it('works', () => {
     render(
       <PlaybackProvider value={mockValue}>

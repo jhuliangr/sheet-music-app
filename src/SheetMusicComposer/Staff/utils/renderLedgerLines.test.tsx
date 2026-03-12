@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { renderLedgerLines } from './renderLedgerLines';
 import { STAFF_TOP, LINE_SPACING } from '#shared/constants';
 
-describe('JazzSheets/Staff/utils/renderLedgerLines', () => {
+describe('SheetMusicComposer/Staff/utils/renderLedgerLines', () => {
   it('works', () => {
     expect(renderLedgerLines(STAFF_TOP + LINE_SPACING * 2)).toBeDefined();
   });

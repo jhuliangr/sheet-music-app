@@ -1,6 +1,6 @@
 import { Outlet, Link, useRouterState } from '@tanstack/react-router';
 import { useTriviaStore } from '#shared/stores/useTriviaStore';
-import '../JazzSheets/JazzSheets.css';
+import '../SheetMusicComposer/SheetMusicComposer.css';
 import './AppLayout.css';
 
 function AppLayout() {

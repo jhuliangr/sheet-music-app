@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import type { Song } from '#shared/types';
 import './SongList.css';
-import { useJazzSheets } from '../useJazzSheets';
+import { useSheetMusicComposer } from '../useSheetMusicComposer';
 
 const STORAGE_KEY = 'sheet-music-songs';
 
 export const SongList: React.FC = () => {
-  const { music, tempo, handleLoadSong } = useJazzSheets();
+  const { music, tempo, handleLoadSong } = useSheetMusicComposer();
 
   const [songs, setSongs] = useState<Song[]>(() => {
     const stored = localStorage.getItem(STORAGE_KEY);

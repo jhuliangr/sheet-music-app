@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { renderStaffLines } from './renderStaffLines';
 import { STAFF_TOP, LINE_SPACING } from '#shared/constants';
 
-describe('JazzSheets/Staff/utils/renderStaffLines', () => {
+describe('SheetMusicComposer/Staff/utils/renderStaffLines', () => {
   it('works', () => {
     expect(renderStaffLines()).toBeDefined();
   });

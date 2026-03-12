@@ -2,11 +2,11 @@ import { Staff } from './Staff';
 import { Palette } from './Palette';
 import { PlaybackControls } from './PlaybackControls';
 import { SongList } from './SongList';
-import { JazzSheetsProvider } from './JazzSheetsProvider';
-import { useJazzSheets } from './useJazzSheets';
-import './JazzSheets.css';
+import { SheetMusicComposerProvider } from './SheetMusicComposerProvider';
+import { useSheetMusicComposer } from './useSheetMusicComposer';
+import './SheetMusicComposer.css';
 
-function JazzSheetsContent() {
+function SheetMusicComposerContent() {
   const {
     music,
     activeNoteId,
@@ -16,7 +16,7 @@ function JazzSheetsContent() {
     handleDeletion,
     handleStaffClick,
     handleMaximumWidthChange,
-  } = useJazzSheets();
+  } = useSheetMusicComposer();
 
   return (
     <div className="main-content">
@@ -67,10 +67,10 @@ function JazzSheetsContent() {
   );
 }
 
-export function JazzSheets() {
+export function SheetMusicComposer() {
   return (
-    <JazzSheetsProvider>
-      <JazzSheetsContent />
-    </JazzSheetsProvider>
+    <SheetMusicComposerProvider>
+      <SheetMusicComposerContent />
+    </SheetMusicComposerProvider>
   );
 }

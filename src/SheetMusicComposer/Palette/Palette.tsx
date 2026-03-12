@@ -2,7 +2,7 @@ import React from 'react';
 import './Palette.css';
 import { CHORD_QUALITIES, DURATIONS, NOTE_NAMES } from '#shared/constants';
 import { Button } from '@radix-ui/themes';
-import { useJazzSheets } from '../useJazzSheets';
+import { useSheetMusicComposer } from '../useSheetMusicComposer';
 
 export const Palette: React.FC = () => {
   const {
@@ -21,7 +21,7 @@ export const Palette: React.FC = () => {
     setSelectedAccidental,
     setIsRest,
     handleClear,
-  } = useJazzSheets();
+  } = useSheetMusicComposer();
 
   return (
     <div className="note-palette">

@@ -17,7 +17,7 @@ const mockValue: PlaybackContextValue = {
 const wrapper = ({ children }: { children: React.ReactNode }) =>
   React.createElement(PlaybackContext.Provider, { value: mockValue }, children);
 
-describe('JazzSheets/usePlaybackContext', () => {
+describe('SheetMusicComposer/usePlaybackContext', () => {
   it('works within a provider', () => {
     const { result } = renderHook(() => usePlaybackContext(), { wrapper });
     expect(result.current).toBeDefined();

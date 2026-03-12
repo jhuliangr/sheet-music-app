@@ -4,7 +4,7 @@ import {
   createRoute,
   createHashHistory,
 } from '@tanstack/react-router';
-import { JazzSheets } from './JazzSheets';
+import { SheetMusicComposer } from './SheetMusicComposer';
 import { Songs } from './Songs';
 import AppLayout from './AppLayout';
 
@@ -15,7 +15,7 @@ const rootRoute = createRootRoute({
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: JazzSheets,
+  component: SheetMusicComposer,
 });
 
 const songsRoute = createRoute({

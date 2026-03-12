@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { NOTE_NAMES, DURATIONS, DURATION_BEATS } from './constants';
-import { generateId, type Note, type Chord, type Song } from './types';
+import { type Note, type Chord, type Song } from './types';
+import { generateId } from './utils';
 
 describe('shared/constants', () => {
   it('exports NOTE_NAMES correctly', () => {

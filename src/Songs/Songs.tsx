@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { Staff } from '../JazzSheets/Staff';
-import { PlaybackControls } from '../JazzSheets/PlaybackControls';
-import { PlaybackProvider } from '../JazzSheets/PlaybackProvider';
+import { Staff } from '../SheetMusicComposer/Staff';
+import { PlaybackControls } from '../SheetMusicComposer/PlaybackControls';
+import { PlaybackProvider } from '../SheetMusicComposer/PlaybackProvider';
 import { MusicTrivia } from './MusicTrivia';
 import type { Song, Note, Chord } from '#shared/types';
 import { DURATION_BEATS, NOTE_WIDTH, STAFF_PADDING } from '#shared/constants';

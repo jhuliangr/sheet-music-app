@@ -4,12 +4,12 @@ import type { NoteName } from '#shared/types';
 
 type SongsState = ReturnType<typeof useSongs>;
 
-export interface JazzSheetsContextValue extends SongsState {
+export interface SheetMusicComposerContextValue extends SongsState {
   activeNoteId: string | null;
   handleNoteSelect: (note: NoteName) => void;
   handleChordSelect: (chord: NoteName) => void;
 }
 
-export const JazzSheetsContext = createContext<
-  JazzSheetsContextValue | undefined
+export const SheetMusicComposerContext = createContext<
+  SheetMusicComposerContextValue | undefined
 >(undefined);

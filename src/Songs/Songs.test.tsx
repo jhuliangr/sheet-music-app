@@ -20,11 +20,11 @@ vi.mock('#shared/usePlayback', () => ({
   }),
 }));
 
-vi.mock('../JazzSheets/Staff', () => ({
+vi.mock('../SheetMusicComposer/Staff', () => ({
   Staff: () => <div data-testid="staff" />,
 }));
 
-vi.mock('../JazzSheets/PlaybackControls', () => ({
+vi.mock('../SheetMusicComposer/PlaybackControls', () => ({
   PlaybackControls: () => <div data-testid="playback-controls" />,
 }));
 

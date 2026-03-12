@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { STAFF_PADDING, NOTE_WIDTH } from '#shared/constants';
+import { STAFF_PADDING, NOTE_WIDTH } from './constants';
 
 import {
   type Note,
@@ -8,10 +8,10 @@ import {
   type Duration,
   type Accidental,
   type ChordQuality,
-  generateId,
   type Song,
-} from '#shared/types';
+} from './types';
 import { usePlayback } from './usePlayback';
+import { generateId } from './utils';
 
 let initialLoadFromStorage = false;
 
