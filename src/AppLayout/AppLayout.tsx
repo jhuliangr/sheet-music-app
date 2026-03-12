@@ -1,7 +1,7 @@
 import { Outlet, Link, useRouterState } from '@tanstack/react-router';
 import { useTriviaStore } from '#shared/stores/useTriviaStore';
 import '../JazzSheets/JazzSheets.css';
-import './AppLayout.css'
+import './AppLayout.css';
 
 function AppLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
