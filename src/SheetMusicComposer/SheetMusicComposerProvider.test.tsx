@@ -49,9 +49,6 @@ vi.mock('#shared/useSongs', () => ({
     setSelectedAccidental: vi.fn(),
     setSelectedNoteOctave: vi.fn(),
     setSelectedChordQuality: vi.fn(),
-    didLoadFromStorage: { current: false },
-    skipInitialSave: { current: false },
-    lastWidthRef: { current: 0 },
     setTempo: vi.fn(),
   }),
 }));

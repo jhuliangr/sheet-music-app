@@ -1,5 +1,4 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { STAFF_PADDING, NOTE_WIDTH } from './constants';
 
 import {
   type Note,
@@ -12,14 +11,12 @@ import {
 } from './types';
 import { usePlayback } from './usePlayback';
 import { generateId } from './utils';
-
-let initialLoadFromStorage = false;
+import { useStaffLayout } from './useStaffLayout';
 
 const getInitialMusic = (): (Note | Chord)[] => {
   try {
     const saved = localStorage.getItem('music');
     if (saved) {
-      initialLoadFromStorage = true;
       return JSON.parse(saved) as (Note | Chord)[];
     }
     return [];
@@ -30,13 +27,11 @@ const getInitialMusic = (): (Note | Chord)[] => {
 
 export const useSongs = () => {
   const [music, setMusic] = useState<(Note | Chord)[]>(getInitialMusic);
-  const didLoadFromStorage = useRef(initialLoadFromStorage);
   const [selectedNote, setSelectedNote] = useState<NoteName | null>('C');
   const [selectedNoteOctave, setSelectedNoteOctave] = useState<number>(4);
   const [selectedChord, setSelectedChord] = useState<NoteName | null>(null);
   const [selectedChordQuality, setSelectedChordQuality] =
     useState<ChordQuality>('major');
-
   const [selectedDuration, setSelectedDuration] = useState<Duration>('quarter');
   const [selectedAccidental, setSelectedAccidental] = useState<Accidental>('');
   const [isRest, setIsRest] = useState<boolean>(false);
@@ -56,11 +51,9 @@ export const useSongs = () => {
     isPlaying,
   } = usePlayback(music);
 
-  const [rowsStaff, setRowsStaff] = useState<
-    { notes: (Note | Chord)[]; position: number }[]
-  >([]);
+  const { rowsStaff, handleMaximumWidthChange } = useStaffLayout(music);
+
   const skipInitialSave = useRef(false);
-  const lastWidthRef = useRef(0);
 
   const handleDeletion = (id: string) => {
     setMusic((prev) =>
@@ -127,55 +120,13 @@ export const useSongs = () => {
     };
   }, [animationRef]);
 
-  const handleMaximumWidthChange = useCallback(
-    (actualWidth: number) => {
-      lastWidthRef.current = actualWidth;
-      const width = STAFF_PADDING * 2 + (music.length + 1) * NOTE_WIDTH;
-
-      if (actualWidth >= width) {
-        setRowsStaff([
-          {
-            notes: music.map((note, i) => ({ ...note, position: i })),
-            position: 0,
-          },
-        ]);
-        return;
-      }
-
-      const chunkMusic = (
-        arr: (Note | Chord)[],
-        notesPerRow: number,
-      ): (Note | Chord)[][] => {
-        const chunks: (Note | Chord)[][] = [];
-        for (let start = 0; start < arr.length; start += notesPerRow) {
-          chunks.push(arr.slice(start, start + notesPerRow));
-        }
-        return chunks;
-      };
-
-      const usableWidth = actualWidth - 2 * STAFF_PADDING;
-      const notesPerRow = Math.max(1, Math.floor(usableWidth / NOTE_WIDTH));
-
-      setRowsStaff(
-        chunkMusic(music, notesPerRow).map((chunk, index) => ({
-          notes: chunk.map((note, i) => ({ ...note, position: i })),
-          position: index,
-        })),
-      );
-    },
-    [music],
-  );
-
   useEffect(() => {
     if (!skipInitialSave.current) {
       skipInitialSave.current = true;
       return;
     }
     localStorage.setItem('music', JSON.stringify(music));
-    if (lastWidthRef.current !== 0) {
-      handleMaximumWidthChange(lastWidthRef.current);
-    }
-  }, [music, handleMaximumWidthChange]);
+  }, [music]);
 
   return {
     music,
@@ -188,9 +139,6 @@ export const useSongs = () => {
     tempo,
     currentPosition,
     rowsStaff,
-    didLoadFromStorage,
-    skipInitialSave,
-    lastWidthRef,
     handleDeletion,
     handleStaffClick,
     handlePlay,

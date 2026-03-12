@@ -1,12 +1,12 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { Staff } from '../SheetMusicComposer/Staff';
 import { PlaybackControls } from '../SheetMusicComposer/PlaybackControls';
 import { PlaybackProvider } from '../SheetMusicComposer/PlaybackProvider';
 import { MusicTrivia } from './MusicTrivia';
 import type { Song, Note, Chord } from '#shared/types';
-import { DURATION_BEATS, NOTE_WIDTH, STAFF_PADDING } from '#shared/constants';
-import { usePlayback } from '#shared/index';
+import { DURATION_BEATS } from '#shared/constants';
+import { usePlayback, useStaffLayout } from '#shared/index';
 import './Songs.css';
 
 const STORAGE_KEY = 'sheet-music-songs';
@@ -24,9 +24,6 @@ export const Songs: React.FC = () => {
   });
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
   const [music, setMusic] = useState<(Note | Chord)[]>([]);
-  const [rowsStaff, setRowsStaff] = useState<
-    { notes: (Note | Chord)[]; position: number }[]
-  >([]);
   const [error, setError] = useState<string | null>(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return null;
@@ -37,8 +34,6 @@ export const Songs: React.FC = () => {
       return 'Error loading saved songs';
     }
   });
-
-  const lastWidthRef = useRef(0);
 
   const {
     handleStop,
@@ -51,6 +46,8 @@ export const Songs: React.FC = () => {
     animationRef,
     setTempo,
   } = usePlayback(music);
+
+  const { rowsStaff, handleMaximumWidthChange } = useStaffLayout(music);
 
   const activeNoteId = useMemo(() => {
     let accumulated = 0;
@@ -92,51 +89,6 @@ export const Songs: React.FC = () => {
       setMusic([]);
     }
   };
-
-  const handleMaximumWidthChange = useCallback(
-    (actualWidth: number) => {
-      lastWidthRef.current = actualWidth;
-      const width = STAFF_PADDING * 2 + (music.length + 1) * NOTE_WIDTH;
-
-      if (actualWidth >= width) {
-        setRowsStaff([
-          {
-            notes: music.map((note, i) => ({ ...note, position: i })),
-            position: 0,
-          },
-        ]);
-        return;
-      }
-
-      const chunkMusic = (
-        arr: (Note | Chord)[],
-        notesPerRow: number,
-      ): (Note | Chord)[][] => {
-        const chunks: (Note | Chord)[][] = [];
-        for (let start = 0; start < arr.length; start += notesPerRow) {
-          chunks.push(arr.slice(start, start + notesPerRow));
-        }
-        return chunks;
-      };
-
-      const usableWidth = actualWidth - 2 * STAFF_PADDING;
-      const notesPerRow = Math.max(1, Math.floor(usableWidth / NOTE_WIDTH));
-
-      setRowsStaff(
-        chunkMusic(music, notesPerRow).map((chunk, index) => ({
-          notes: chunk.map((note, i) => ({ ...note, position: i })),
-          position: index,
-        })),
-      );
-    },
-    [music],
-  );
-
-  useEffect(() => {
-    if (lastWidthRef.current !== 0) {
-      handleMaximumWidthChange(lastWidthRef.current);
-    }
-  }, [music, handleMaximumWidthChange]);
 
   useEffect(() => {
     const ref = animationRef;
