@@ -35,7 +35,6 @@ vi.mock('#shared/useSongs', () => ({
     selectedChordQuality: 'major',
     isRest: false,
     rowsStaff: [],
-    handleNoteClick: vi.fn(),
     handleDeletion: vi.fn(),
     handleStaffClick: vi.fn(),
     handleLoadSong: vi.fn(),

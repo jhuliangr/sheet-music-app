@@ -8,7 +8,6 @@ interface StaffProps {
   music: (Note | Chord)[];
   activeNoteId: string | null;
   isPlaying: boolean;
-  onNoteClick?: (position: number) => void;
   onDelete: (id: string) => void;
 
   onMaximumWidthChange?: (actualWidth: number) => void;
@@ -17,7 +16,6 @@ interface StaffProps {
 export const Staff: React.FC<StaffProps> = ({
   music,
   activeNoteId,
-  onNoteClick,
   onDelete,
   onMaximumWidthChange,
 }) => {
@@ -61,7 +59,6 @@ export const Staff: React.FC<StaffProps> = ({
           style={{ left: x, maxWidth: '100%' }}
           onClick={(e) => {
             e.stopPropagation();
-            onNoteClick?.(noteOrChord.position);
           }}
           onContextMenu={handleDelete}
         >

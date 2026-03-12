@@ -25,7 +25,6 @@ const defaultSheetMusicComposer = {
   activeNoteId: null,
   isPlaying: false,
   rowsStaff: [],
-  handleNoteClick: vi.fn(),
   handleDeletion: vi.fn(),
   handleStaffClick: vi.fn(),
   handleMaximumWidthChange: vi.fn(),

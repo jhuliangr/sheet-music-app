@@ -12,7 +12,6 @@ function SheetMusicComposerContent() {
     activeNoteId,
     isPlaying,
     rowsStaff,
-    handleNoteClick,
     handleDeletion,
     handleStaffClick,
     handleMaximumWidthChange,
@@ -35,9 +34,6 @@ function SheetMusicComposerContent() {
                 music={row.notes}
                 activeNoteId={activeNoteId}
                 isPlaying={isPlaying}
-                onNoteClick={
-                  index === rowsStaff.length - 1 ? handleNoteClick : undefined
-                }
                 onDelete={handleDeletion}
                 onMaximumWidthChange={
                   index === 0 ? handleMaximumWidthChange : undefined
@@ -51,7 +47,6 @@ function SheetMusicComposerContent() {
               music={music}
               activeNoteId={activeNoteId}
               isPlaying={isPlaying}
-              onNoteClick={handleNoteClick}
               onDelete={handleDeletion}
               onMaximumWidthChange={handleMaximumWidthChange}
             />

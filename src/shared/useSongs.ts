@@ -62,11 +62,6 @@ export const useSongs = () => {
   const skipInitialSave = useRef(false);
   const lastWidthRef = useRef(0);
 
-  const handleNoteClick = useCallback((position: number) => {
-    console.log('noteClick ', position);
-    // setMusic((prev) => prev.filter((n) => n.position !== position));
-  }, []);
-
   const handleDeletion = (id: string) => {
     setMusic((prev) =>
       prev.filter((n) => n.id !== id).map((n, i) => ({ ...n, position: i })),
@@ -196,7 +191,6 @@ export const useSongs = () => {
     didLoadFromStorage,
     skipInitialSave,
     lastWidthRef,
-    handleNoteClick,
     handleDeletion,
     handleStaffClick,
     handlePlay,
