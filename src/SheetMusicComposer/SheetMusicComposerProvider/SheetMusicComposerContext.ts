@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import type { useSongs } from '#shared/useSongs';
+import type { useSongs } from '#shared/songs/useSongs';
 import type { NoteName } from '#shared/types';
 
 type SongsState = ReturnType<typeof useSongs>;

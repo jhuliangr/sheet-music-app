@@ -1,16 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { SheetMusicComposer } from './SheetMusicComposer';
-import { useSheetMusicComposer } from './useSheetMusicComposer';
-import { usePlaybackContext } from './usePlaybackContext';
+import { useSheetMusicComposer } from './SheetMusicComposerProvider';
+import { usePlaybackContext } from './PlaybackProvider';
 
 vi.mock('./SheetMusicComposerProvider', () => ({
   SheetMusicComposerProvider: ({ children }: { children: React.ReactNode }) => (
     <>{children}</>
   ),
+  useSheetMusicComposer: vi.fn(),
 }));
-vi.mock('./useSheetMusicComposer');
-vi.mock('./usePlaybackContext');
+vi.mock('./PlaybackProvider', () => ({
+  PlaybackProvider: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
+  usePlaybackContext: vi.fn(),
+}));
 vi.mock('./Staff', () => ({ Staff: () => <div data-testid="staff" /> }));
 vi.mock('./Palette', () => ({ Palette: () => <div data-testid="palette" /> }));
 vi.mock('./SongList', () => ({

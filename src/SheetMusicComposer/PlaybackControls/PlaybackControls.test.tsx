@@ -2,9 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PlaybackControls } from './PlaybackControls';
-import { usePlaybackContext } from '../usePlaybackContext';
+import { usePlaybackContext } from '../PlaybackProvider';
 
-vi.mock('../usePlaybackContext');
+vi.mock('../PlaybackProvider');
 
 const handlePlay = vi.fn();
 const handlePause = vi.fn();

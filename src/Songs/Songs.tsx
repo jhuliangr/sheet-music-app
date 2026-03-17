@@ -7,7 +7,7 @@ import { MusicTrivia } from './MusicTrivia';
 import type { Song, Note, Chord } from '#shared/types';
 import { DURATION_BEATS } from '#shared/constants';
 import { usePlayback, useStaffLayout } from '#shared/index';
-import { useSongsStore } from '#shared/stores/useSongsStore';
+import { useSongsStore } from '#shared/songs/useSongsStore';
 import styles from './Songs.module.css';
 
 export const Songs: React.FC = () => {

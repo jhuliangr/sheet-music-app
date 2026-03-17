@@ -1,5 +1,5 @@
 import { Outlet, Link, useRouterState } from '@tanstack/react-router';
-import { useTriviaStore } from '#shared/stores/useTriviaStore';
+import { useTriviaStore } from '#shared/trivia/useTriviaStore';
 import styles from './AppLayout.module.css';
 
 function AppLayout() {

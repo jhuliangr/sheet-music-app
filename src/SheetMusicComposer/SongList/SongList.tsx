@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import type { Song } from '#shared/types';
-import { useSongsStore } from '#shared/stores/useSongsStore';
+import { useSongsStore } from '#shared/songs/useSongsStore';
 import { generateId } from '#shared/utils';
 import styles from './SongList.module.css';
-import { useSheetMusicComposer } from '../useSheetMusicComposer';
+import { useSheetMusicComposer } from '../SheetMusicComposerProvider';
 
 export const SongList: React.FC = () => {
   const { music, tempo, handleLoadSong } = useSheetMusicComposer();

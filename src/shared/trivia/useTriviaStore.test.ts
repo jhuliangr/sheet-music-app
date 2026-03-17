@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useTriviaStore } from './useTriviaStore';
 
-describe('shared/stores/useTriviaStore', () => {
+describe('shared/trivia/useTriviaStore', () => {
   beforeEach(() => {
     useTriviaStore.setState({ score: 0, total: 0 });
   });

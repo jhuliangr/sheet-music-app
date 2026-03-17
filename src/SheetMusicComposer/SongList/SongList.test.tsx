@@ -2,11 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SongList } from './SongList';
-import { useSheetMusicComposer } from '../useSheetMusicComposer';
-import { useSongsStore } from '#shared/stores/useSongsStore';
+import { useSheetMusicComposer } from '../SheetMusicComposerProvider';
+import { useSongsStore } from '#shared/songs/useSongsStore';
 
-vi.mock('../useSheetMusicComposer');
-vi.mock('#shared/stores/useSongsStore', () => ({
+vi.mock('../SheetMusicComposerProvider');
+vi.mock('#shared/songs/useSongsStore', () => ({
   useSongsStore: vi.fn(),
 }));
 

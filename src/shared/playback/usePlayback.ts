@@ -6,7 +6,7 @@ import {
   ACCIDENTAL_OFFSET,
   SEMITONE_TO_NOTE,
 } from '#shared/constants';
-import { type Note, type Chord, type ChordQuality } from './types';
+import { type Note, type Chord, type ChordQuality } from '../types';
 import * as Tone from 'tone';
 
 export const usePlayback = (music: (Note | Chord)[]) => {

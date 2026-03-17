@@ -3,7 +3,7 @@ import { Palette } from './Palette';
 import { PlaybackControls } from './PlaybackControls';
 import { SongList } from './SongList';
 import { SheetMusicComposerProvider } from './SheetMusicComposerProvider';
-import { useSheetMusicComposer } from './useSheetMusicComposer';
+import { useSheetMusicComposer } from './SheetMusicComposerProvider';
 import styles from './SheetMusicComposer.module.css';
 
 function SheetMusicComposerContent() {

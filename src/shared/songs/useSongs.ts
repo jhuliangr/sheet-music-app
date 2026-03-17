@@ -8,11 +8,11 @@ import {
   type Accidental,
   type ChordQuality,
   type Song,
-} from './types';
-import { usePlayback } from './usePlayback';
-import { generateId } from './utils';
-import { useStaffLayout } from './useStaffLayout';
-import { useMusicStore } from './stores/useMusicStore';
+} from '../types';
+import { usePlayback } from '../playback/usePlayback';
+import { generateId } from '../utils';
+import { useStaffLayout } from '../staff/useStaffLayout';
+import { useMusicStore } from './useMusicStore';
 
 export const useSongs = () => {
   const { music, setMusic } = useMusicStore();

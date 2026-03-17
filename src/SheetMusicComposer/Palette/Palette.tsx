@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './Palette.module.css';
 import { CHORD_QUALITIES, DURATIONS, NOTE_NAMES } from '#shared/constants';
 import { Button } from '@radix-ui/themes';
-import { useSheetMusicComposer } from '../useSheetMusicComposer';
+import { useSheetMusicComposer } from '../SheetMusicComposerProvider';
 
 export const Palette: React.FC = () => {
   const {

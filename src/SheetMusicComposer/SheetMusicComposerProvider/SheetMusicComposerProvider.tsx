@@ -1,12 +1,12 @@
 import { useMemo, type ReactNode } from 'react';
-import { useSongs } from '#shared/useSongs';
+import { useSongs } from '#shared/songs/useSongs';
 import { DURATION_BEATS } from '#shared/constants';
 import type { NoteName } from '#shared/types';
 import {
   SheetMusicComposerContext,
   type SheetMusicComposerContextValue,
 } from './SheetMusicComposerContext';
-import { PlaybackProvider } from './PlaybackProvider';
+import { PlaybackProvider } from '../PlaybackProvider';
 
 export function SheetMusicComposerProvider({
   children,

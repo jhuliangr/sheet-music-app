@@ -5,7 +5,7 @@ import React from 'react';
 import { SheetMusicComposerProvider } from './SheetMusicComposerProvider';
 import { useSheetMusicComposer } from './useSheetMusicComposer';
 
-vi.mock('#shared/useSongs', () => ({
+vi.mock('#shared/songs/useSongs', () => ({
   useSongs: () => ({
     music: [
       {

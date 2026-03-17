@@ -1,13 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { Songs } from './Songs';
-import { useSongsStore } from '#shared/stores/useSongsStore';
+import { useSongsStore } from '#shared/songs/useSongsStore';
 
 vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => vi.fn(),
 }));
 
-vi.mock('#shared/usePlayback', () => ({
+vi.mock('#shared/playback/usePlayback', () => ({
   usePlayback: () => ({
     handleStop: vi.fn(),
     handlePlay: vi.fn(),
@@ -33,7 +33,7 @@ vi.mock('./MusicTrivia', () => ({
   MusicTrivia: () => <div data-testid="music-trivia" />,
 }));
 
-vi.mock('#shared/stores/useSongsStore', () => ({
+vi.mock('#shared/songs/useSongsStore', () => ({
   useSongsStore: vi.fn(),
 }));
 

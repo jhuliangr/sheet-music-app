@@ -18,7 +18,7 @@ vi.mock('./useMusicTrivia', () => ({
   useMusicTrivia: vi.fn(() => [mockTrivia, { refresh: refreshMock }]),
 }));
 
-vi.mock('#shared/stores/useTriviaStore', () => ({
+vi.mock('#shared/trivia/useTriviaStore', () => ({
   useTriviaStore: (
     selector: (s: { recordAnswer: ReturnType<typeof vi.fn> }) => unknown,
   ) => selector({ recordAnswer: vi.fn() }),

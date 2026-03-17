@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMusicTrivia } from './useMusicTrivia';
-import { useTriviaStore } from '#shared/stores/useTriviaStore';
+import { useTriviaStore } from '#shared/trivia/useTriviaStore';
 import { TriviaView } from './TriviaView';
 
 export const TriviaContent: React.FC = () => {

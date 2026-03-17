@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { Palette } from './Palette';
-import { useSheetMusicComposer } from '../useSheetMusicComposer';
+import { useSheetMusicComposer } from '../SheetMusicComposerProvider';
 
-vi.mock('../useSheetMusicComposer');
+vi.mock('../SheetMusicComposerProvider');
 
 const defaultContextValue = {
   selectedNote: 'C' as const,

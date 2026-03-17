@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './PlaybackControls.module.css';
-import { usePlaybackContext } from '../usePlaybackContext';
+import { usePlaybackContext } from '../PlaybackProvider';
 
 export const PlaybackControls: React.FC = () => {
   const {

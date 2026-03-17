@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { STAFF_PADDING, NOTE_WIDTH } from './constants';
-import type { Note, Chord } from './types';
+import { STAFF_PADDING, NOTE_WIDTH } from '../constants';
+import type { Note, Chord } from '../types';
 
 type StaffRow = { notes: (Note | Chord)[]; position: number };
 
